@@ -101,7 +101,7 @@ struct MainTabView: View {
                 .frame(width: 58, height: 58)
                 .background(AppColors.primaryTeal)
                 .clipShape(Circle())
-                .shadow(color: AppColors.primaryTeal.opacity(0.25), radius: 16, x: 0, y: 8)
+                .shadow(color: AppColors.shadow, radius: 16, x: 0, y: 8)
         }
         .offset(y: -18)
         .accessibilityLabel("Add transaction")

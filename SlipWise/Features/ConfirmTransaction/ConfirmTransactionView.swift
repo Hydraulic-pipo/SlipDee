@@ -141,7 +141,7 @@ struct ConfirmTransactionView: View {
                     TextField("Add a short note", text: $note, axis: .vertical)
                         .foregroundStyle(AppColors.primaryText)
                         .padding(14)
-                        .background(AppColors.background)
+                        .background(AppColors.elevatedCardBackground)
                         .overlay(
                             RoundedRectangle(cornerRadius: AppCornerRadius.small, style: .continuous)
                                 .stroke(AppColors.border, lineWidth: 1)
@@ -186,7 +186,7 @@ struct ConfirmTransactionView: View {
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(AppColors.background)
+                        .background(AppColors.elevatedCardBackground)
                         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                 }
             }

@@ -101,7 +101,7 @@ struct ScanSlipView: View {
 
                 ZStack {
                     RoundedRectangle(cornerRadius: AppCornerRadius.medium, style: .continuous)
-                        .fill(AppColors.background)
+                        .fill(AppColors.elevatedCardBackground)
                         .frame(height: 280)
 
                     RoundedRectangle(cornerRadius: AppCornerRadius.medium, style: .continuous)

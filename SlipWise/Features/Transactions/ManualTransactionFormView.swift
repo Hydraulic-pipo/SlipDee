@@ -159,7 +159,7 @@ struct ManualTransactionFormView: View {
             .padding(.horizontal, 14)
             .padding(.vertical, 14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(AppColors.background)
+            .background(AppColors.elevatedCardBackground)
             .overlay(
                 RoundedRectangle(cornerRadius: AppCornerRadius.small, style: .continuous)
                     .stroke(AppColors.border, lineWidth: 1)

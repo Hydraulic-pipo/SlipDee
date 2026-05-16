@@ -4,6 +4,7 @@ import SwiftUI
 @main
 struct SlipWiseApp: App {
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
+    @AppStorage("appearanceMode") private var appearanceModeRawValue = AppAppearanceMode.system.rawValue
 
     private let sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -44,12 +45,17 @@ struct SlipWiseApp: App {
                     }
                 }
             }
+            .preferredColorScheme(selectedAppearanceMode.colorScheme)
             .task {
                 // Seed small fictional samples so the charts and dashboard are useful on first launch.
                 await DemoDataSeeder.seedIfNeeded(container: sharedModelContainer)
             }
         }
         .modelContainer(sharedModelContainer)
+    }
+
+    private var selectedAppearanceMode: AppAppearanceMode {
+        AppAppearanceMode(rawValue: appearanceModeRawValue) ?? .system
     }
 }
 

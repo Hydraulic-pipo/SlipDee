@@ -4,6 +4,7 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var settingsList: [UserSettings]
+    @AppStorage("appearanceMode") private var appearanceModeRawValue = AppAppearanceMode.system.rawValue
 
     @State private var hideAmounts = false
     @State private var screenshotProtection = false
@@ -21,6 +22,7 @@ struct SettingsView: View {
                         .font(.system(size: 32, weight: .bold, design: .rounded))
                         .foregroundStyle(AppColors.primaryText)
 
+                    appearanceSection
                     privacySection
                     bankSourcesSection
                     dataSection
@@ -32,6 +34,23 @@ struct SettingsView: View {
             }
         }
         .onAppear(perform: ensureSettings)
+    }
+
+    private var appearanceSection: some View {
+        settingsSection(title: "Appearance") {
+            NavigationLink {
+                AppearanceSettingsView()
+            } label: {
+                SettingsRowView(
+                    icon: "circle.lefthalf.filled",
+                    title: "Appearance",
+                    subtitle: "Choose System, Light, or Dark mode",
+                    trailingText: selectedAppearanceMode.title
+                )
+                .padding(.vertical, 10)
+            }
+            .buttonStyle(.plain)
+        }
     }
 
     private var privacySection: some View {
@@ -171,5 +190,9 @@ struct SettingsView: View {
         settings.isBiometricUnlockEnabled = isEnabled
         settings.touch()
         try? modelContext.save()
+    }
+
+    private var selectedAppearanceMode: AppAppearanceMode {
+        AppAppearanceMode(rawValue: appearanceModeRawValue) ?? .system
     }
 }

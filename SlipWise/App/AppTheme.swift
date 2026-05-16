@@ -12,21 +12,102 @@ extension Color {
         let blue = Double(value & 0xFF) / 255
         self.init(red: red, green: green, blue: blue)
     }
+
+    init(dynamicLight: UIColor, dark: UIColor) {
+        self.init(uiColor: UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark ? dark : dynamicLight
+        })
+    }
+}
+
+enum AppAppearanceMode: String, CaseIterable, Identifiable {
+    case system
+    case light
+    case dark
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .system:
+            return "System"
+        case .light:
+            return "Light"
+        case .dark:
+            return "Dark"
+        }
+    }
+
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system:
+            return nil
+        case .light:
+            return .light
+        case .dark:
+            return .dark
+        }
+    }
 }
 
 enum AppColors {
-    static let background = Color(red: 248 / 255, green: 250 / 255, blue: 252 / 255)
-    static let cardBackground = Color.white
-    static let primaryTeal = Color(red: 20 / 255, green: 184 / 255, blue: 166 / 255)
-    static let darkTeal = Color(red: 15 / 255, green: 118 / 255, blue: 110 / 255)
-    static let softMint = Color(red: 204 / 255, green: 251 / 255, blue: 241 / 255)
-    static let primaryText = Color(red: 15 / 255, green: 23 / 255, blue: 42 / 255)
-    static let secondaryText = Color(red: 100 / 255, green: 116 / 255, blue: 139 / 255)
-    static let mutedText = Color(red: 148 / 255, green: 163 / 255, blue: 184 / 255)
-    static let border = Color(red: 226 / 255, green: 232 / 255, blue: 240 / 255)
-    static let income = Color(red: 22 / 255, green: 163 / 255, blue: 74 / 255)
-    static let expense = Color(red: 249 / 255, green: 115 / 255, blue: 115 / 255)
-    static let warning = Color(red: 245 / 255, green: 158 / 255, blue: 11 / 255)
+    static let background = Color(
+        dynamicLight: UIColor(red: 248 / 255, green: 250 / 255, blue: 252 / 255, alpha: 1),
+        dark: UIColor(red: 15 / 255, green: 23 / 255, blue: 42 / 255, alpha: 1)
+    )
+    static let cardBackground = Color(
+        dynamicLight: .white,
+        dark: UIColor(red: 30 / 255, green: 41 / 255, blue: 59 / 255, alpha: 1)
+    )
+    static let elevatedCardBackground = Color(
+        dynamicLight: UIColor(red: 241 / 255, green: 245 / 255, blue: 249 / 255, alpha: 1),
+        dark: UIColor(red: 36 / 255, green: 50 / 255, blue: 68 / 255, alpha: 1)
+    )
+    static let primaryTeal = Color(
+        dynamicLight: UIColor(red: 20 / 255, green: 184 / 255, blue: 166 / 255, alpha: 1),
+        dark: UIColor(red: 45 / 255, green: 212 / 255, blue: 191 / 255, alpha: 1)
+    )
+    static let darkTeal = Color(
+        dynamicLight: UIColor(red: 15 / 255, green: 118 / 255, blue: 110 / 255, alpha: 1),
+        dark: UIColor(red: 20 / 255, green: 184 / 255, blue: 166 / 255, alpha: 1)
+    )
+    static let softTealBackground = Color(
+        dynamicLight: UIColor(red: 204 / 255, green: 251 / 255, blue: 241 / 255, alpha: 1),
+        dark: UIColor(red: 19 / 255, green: 78 / 255, blue: 74 / 255, alpha: 1)
+    )
+    static let softMint = softTealBackground
+    static let primaryText = Color(
+        dynamicLight: UIColor(red: 15 / 255, green: 23 / 255, blue: 42 / 255, alpha: 1),
+        dark: UIColor(red: 248 / 255, green: 250 / 255, blue: 252 / 255, alpha: 1)
+    )
+    static let secondaryText = Color(
+        dynamicLight: UIColor(red: 100 / 255, green: 116 / 255, blue: 139 / 255, alpha: 1),
+        dark: UIColor(red: 203 / 255, green: 213 / 255, blue: 225 / 255, alpha: 1)
+    )
+    static let mutedText = Color(
+        dynamicLight: UIColor(red: 148 / 255, green: 163 / 255, blue: 184 / 255, alpha: 1),
+        dark: UIColor(red: 148 / 255, green: 163 / 255, blue: 184 / 255, alpha: 1)
+    )
+    static let border = Color(
+        dynamicLight: UIColor(red: 226 / 255, green: 232 / 255, blue: 240 / 255, alpha: 1),
+        dark: UIColor(red: 51 / 255, green: 65 / 255, blue: 85 / 255, alpha: 1)
+    )
+    static let income = Color(
+        dynamicLight: UIColor(red: 22 / 255, green: 163 / 255, blue: 74 / 255, alpha: 1),
+        dark: UIColor(red: 74 / 255, green: 222 / 255, blue: 128 / 255, alpha: 1)
+    )
+    static let expense = Color(
+        dynamicLight: UIColor(red: 249 / 255, green: 115 / 255, blue: 115 / 255, alpha: 1),
+        dark: UIColor(red: 251 / 255, green: 113 / 255, blue: 133 / 255, alpha: 1)
+    )
+    static let warning = Color(
+        dynamicLight: UIColor(red: 245 / 255, green: 158 / 255, blue: 11 / 255, alpha: 1),
+        dark: UIColor(red: 251 / 255, green: 191 / 255, blue: 36 / 255, alpha: 1)
+    )
+    static let shadow = Color(
+        dynamicLight: UIColor.black.withAlphaComponent(0.05),
+        dark: UIColor.black.withAlphaComponent(0.18)
+    )
 }
 
 enum AppSpacing {
@@ -44,7 +125,7 @@ enum AppCornerRadius {
 }
 
 enum AppShadow {
-    static let cardColor = Color.black.opacity(0.05)
+    static let cardColor = AppColors.shadow
     static let cardRadius: CGFloat = 18
     static let cardYOffset: CGFloat = 8
 }
@@ -53,9 +134,9 @@ enum AppTheme {
     static let navy = AppColors.primaryTeal
     static let navySecondary = AppColors.darkTeal
     static let cardBackground = AppColors.cardBackground
-    static let cardSecondary = AppColors.background
+    static let cardSecondary = AppColors.elevatedCardBackground
     static let mint = AppColors.primaryTeal
-    static let cyan = AppColors.softMint
+    static let cyan = AppColors.softTealBackground
     static let ink = AppColors.primaryText
     static let mutedInk = AppColors.secondaryText
     static let positive = AppColors.income
@@ -192,7 +273,7 @@ struct EmptyStateCard: View {
                     .font(.system(size: 24, weight: .semibold))
                     .foregroundStyle(AppColors.darkTeal)
                     .frame(width: 56, height: 56)
-                    .background(AppColors.softMint)
+                    .background(AppColors.softTealBackground)
                     .clipShape(Circle())
 
                 Text(title)
@@ -257,7 +338,7 @@ struct AppInputField: View {
                 .foregroundStyle(AppColors.primaryText)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 14)
-                .background(AppColors.background)
+                .background(AppColors.elevatedCardBackground)
                 .overlay(
                     RoundedRectangle(cornerRadius: AppCornerRadius.small, style: .continuous)
                         .stroke(AppColors.border, lineWidth: 1)
@@ -294,7 +375,7 @@ struct AppPickerField<Content: View, SelectionValue: Hashable>: View {
             .tint(AppColors.primaryText)
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
-            .background(AppColors.background)
+            .background(AppColors.elevatedCardBackground)
             .overlay(
                 RoundedRectangle(cornerRadius: AppCornerRadius.small, style: .continuous)
                     .stroke(AppColors.border, lineWidth: 1)
@@ -325,7 +406,7 @@ struct SettingsRowView: View {
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(AppColors.darkTeal)
                 .frame(width: 34, height: 34)
-                .background(AppColors.softMint)
+                .background(AppColors.softTealBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
             VStack(alignment: .leading, spacing: 4) {

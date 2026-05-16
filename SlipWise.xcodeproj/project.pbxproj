@@ -18,6 +18,7 @@
 		1B8A00090000000000000001 /* EditTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00080000000000000001 /* EditTransactionView.swift */; };
 		1B8A000B0000000000000001 /* EditDeleteSecurityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A000A0000000000000001 /* EditDeleteSecurityView.swift */; };
 		1B8A000D0000000000000001 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A000C0000000000000001 /* SettingsView.swift */; };
+		1B8A00190000000000000001 /* AppearanceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00180000000000000001 /* AppearanceSettingsView.swift */; };
 		1B8A000F0000000000000001 /* ReportsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A000E0000000000000001 /* ReportsViewModel.swift */; };
 		1B8A00110000000000000001 /* CategorySpendingSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00100000000000000001 /* CategorySpendingSummary.swift */; };
 		1B8A00130000000000000001 /* CategoryDonutChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00120000000000000001 /* CategoryDonutChartView.swift */; };
@@ -61,6 +62,7 @@
 		1B8A00080000000000000001 /* EditTransactionView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EditTransactionView.swift; sourceTree = "<group>"; };
 		1B8A000A0000000000000001 /* EditDeleteSecurityView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EditDeleteSecurityView.swift; sourceTree = "<group>"; };
 		1B8A000C0000000000000001 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		1B8A00180000000000000001 /* AppearanceSettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppearanceSettingsView.swift; sourceTree = "<group>"; };
 		1B8A000E0000000000000001 /* ReportsViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReportsViewModel.swift; sourceTree = "<group>"; };
 		1B8A00100000000000000001 /* CategorySpendingSummary.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategorySpendingSummary.swift; sourceTree = "<group>"; };
 		1B8A00120000000000000001 /* CategoryDonutChartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategoryDonutChartView.swift; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 		4E1A945801F209FE8ED07DBE /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				1B8A00180000000000000001 /* AppearanceSettingsView.swift */,
 				1B8A000A0000000000000001 /* EditDeleteSecurityView.swift */,
 				51C37FAB029974441AC84C18 /* PrivacySettingsView.swift */,
 				1B8A000C0000000000000001 /* SettingsView.swift */,
@@ -436,6 +439,7 @@
 				1B8A000F0000000000000001 /* ReportsViewModel.swift in Sources */,
 				C41FA8FDD05C7646631F0529 /* ScanSlipView.swift in Sources */,
 				25AE240C84432F7A287F68C9 /* ScanSlipViewModel.swift in Sources */,
+				1B8A00190000000000000001 /* AppearanceSettingsView.swift in Sources */,
 				1B8A000B0000000000000001 /* EditDeleteSecurityView.swift in Sources */,
 				AC3656C7632B54E56E1A5B8E /* PrivacySettingsView.swift in Sources */,
 				1B8A000D0000000000000001 /* SettingsView.swift in Sources */,
