@@ -38,6 +38,10 @@
 		1B8A003B0000000000000001 /* SlipScanResultRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A003A0000000000000001 /* SlipScanResultRowView.swift */; };
 		1B8A003D0000000000000001 /* SlipScanReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A003C0000000000000001 /* SlipScanReviewView.swift */; };
 		1B8A003F0000000000000001 /* SpendingInsightProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A003E0000000000000001 /* SpendingInsightProvider.swift */; };
+		1B8A00410000000000000001 /* CSVExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00400000000000000001 /* CSVExportService.swift */; };
+		1B8A00430000000000000001 /* ShareSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00420000000000000001 /* ShareSheetView.swift */; };
+		1B8A00450000000000000001 /* DataExportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00440000000000000001 /* DataExportViewModel.swift */; };
+		1B8A00470000000000000001 /* DataExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00460000000000000001 /* DataExportView.swift */; };
 		1B8A000F0000000000000001 /* ReportsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A000E0000000000000001 /* ReportsViewModel.swift */; };
 		1B8A00110000000000000001 /* CategorySpendingSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00100000000000000001 /* CategorySpendingSummary.swift */; };
 		1B8A00130000000000000001 /* CategoryDonutChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00120000000000000001 /* CategoryDonutChartView.swift */; };
@@ -101,6 +105,10 @@
 		1B8A003A0000000000000001 /* SlipScanResultRowView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SlipScanResultRowView.swift; sourceTree = "<group>"; };
 		1B8A003C0000000000000001 /* SlipScanReviewView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SlipScanReviewView.swift; sourceTree = "<group>"; };
 		1B8A003E0000000000000001 /* SpendingInsightProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SpendingInsightProvider.swift; sourceTree = "<group>"; };
+		1B8A00400000000000000001 /* CSVExportService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CSVExportService.swift; sourceTree = "<group>"; };
+		1B8A00420000000000000001 /* ShareSheetView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ShareSheetView.swift; sourceTree = "<group>"; };
+		1B8A00440000000000000001 /* DataExportViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataExportViewModel.swift; sourceTree = "<group>"; };
+		1B8A00460000000000000001 /* DataExportView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataExportView.swift; sourceTree = "<group>"; };
 		1B8A000E0000000000000001 /* ReportsViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReportsViewModel.swift; sourceTree = "<group>"; };
 		1B8A00100000000000000001 /* CategorySpendingSummary.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategorySpendingSummary.swift; sourceTree = "<group>"; };
 		1B8A00120000000000000001 /* CategoryDonutChartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategoryDonutChartView.swift; sourceTree = "<group>"; };
@@ -196,6 +204,7 @@
 				1B8A00220000000000000001 /* AppLockManager.swift */,
 				1B8A00020000000000000001 /* AppPasscodeService.swift */,
 				1B8A00320000000000000001 /* BasicSlipParserService.swift */,
+				1B8A00400000000000000001 /* CSVExportService.swift */,
 				1B8A00340000000000000001 /* DuplicateSlipDetectionService.swift */,
 				D43D0852A6C6B05C84BECC63 /* OCRService.swift */,
 				1B8A00300000000000000001 /* SlipCandidateDetectionService.swift */,
@@ -224,6 +233,8 @@
 			isa = PBXGroup;
 			children = (
 				1B8A00180000000000000001 /* AppearanceSettingsView.swift */,
+				1B8A00460000000000000001 /* DataExportView.swift */,
+				1B8A00440000000000000001 /* DataExportViewModel.swift */,
 				1B8A001C0000000000000001 /* EditDisplayNameView.swift */,
 				1B8A000A0000000000000001 /* EditDeleteSecurityView.swift */,
 				1B8A00260000000000000001 /* LockTimeoutSettingsView.swift */,
@@ -241,6 +252,7 @@
 			children = (
 				1B8A00040000000000000001 /* PasscodePromptView.swift */,
 				1B8A00240000000000000001 /* PrivacyOverlayView.swift */,
+				1B8A00420000000000000001 /* ShareSheetView.swift */,
 			);
 			name = Components;
 			path = Components;
@@ -500,6 +512,7 @@
 				1B8A00210000000000000001 /* AmountDisplayFormatter.swift in Sources */,
 				1B8A002D0000000000000001 /* AmountParser.swift in Sources */,
 				7C4D7495E4BEF38412C147D4 /* CurrencyFormatter.swift in Sources */,
+				1B8A00410000000000000001 /* CSVExportService.swift in Sources */,
 				1B8A002F0000000000000001 /* DateParser.swift in Sources */,
 				9580BCAFF1868544EF35D4F5 /* DateParsers.swift in Sources */,
 				FA8ADAB2FF9DB7AD6F398939 /* DemoDataSeeder.swift in Sources */,
@@ -510,8 +523,11 @@
 				1B8A00150000000000000001 /* CategoryBreakdownListView.swift in Sources */,
 				1B8A00130000000000000001 /* CategoryDonutChartView.swift in Sources */,
 				1B8A00110000000000000001 /* CategorySpendingSummary.swift in Sources */,
+				1B8A00470000000000000001 /* DataExportView.swift in Sources */,
+				1B8A00450000000000000001 /* DataExportViewModel.swift in Sources */,
 				B7F3C1AE682B3A3BB494EAB4 /* ReportsView.swift in Sources */,
 				1B8A000F0000000000000001 /* ReportsViewModel.swift in Sources */,
+				1B8A00430000000000000001 /* ShareSheetView.swift in Sources */,
 				1B8A003F0000000000000001 /* SpendingInsightProvider.swift in Sources */,
 				1B8A00370000000000000001 /* MultipleSlipScanView.swift in Sources */,
 				1B8A00390000000000000001 /* MultipleSlipScanViewModel.swift in Sources */,

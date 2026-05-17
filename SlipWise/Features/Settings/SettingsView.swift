@@ -167,14 +167,17 @@ struct SettingsView: View {
 
     private var dataSection: some View {
         settingsSection(title: "Data & Export") {
-            SettingsRowView(
-                icon: "square.and.arrow.up",
-                title: "Export Data",
-                subtitle: "Export tools are not available yet.",
-                trailingText: "Coming Soon",
-                showsChevron: false
-            )
-            .padding(.vertical, 10)
+            NavigationLink {
+                DataExportView()
+            } label: {
+                SettingsRowView(
+                    icon: "square.and.arrow.up",
+                    title: "Data & Export",
+                    subtitle: "CSV export"
+                )
+                .padding(.vertical, 10)
+            }
+            .buttonStyle(.plain)
             divider
             SettingsRowView(
                 icon: "icloud",
