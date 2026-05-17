@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CategoryBreakdownListView: View {
     let items: [CategorySpendingItem]
+    var isHideAmountsEnabled = false
 
     var body: some View {
         AppCard {
@@ -28,7 +29,7 @@ struct CategoryBreakdownListView: View {
                                     .font(.subheadline.weight(.semibold))
                                     .foregroundStyle(AppColors.primaryText)
 
-                                Text(CurrencyFormatter.bahtString(from: item.amount))
+                                Text(AmountDisplayFormatter.display(amount: item.amount, isHidden: isHideAmountsEnabled))
                                     .font(.caption)
                                     .foregroundStyle(AppColors.secondaryText)
                             }

@@ -16,6 +16,15 @@ enum CurrencyFormatter {
         bahtFormatter.string(from: NSNumber(value: amount)) ?? "฿0.00"
     }
 
+    static func maskedAmountString(currencyCode: String = CurrencyCode.thb) -> String {
+        switch currencyCode {
+        case CurrencyCode.thb:
+            return "฿••••••"
+        default:
+            return "••••••"
+        }
+    }
+
     static func bahtInputString(from amountText: String) -> String {
         guard let amount = Double(amountText.replacingOccurrences(of: ",", with: "")) else {
             return "฿0.00"

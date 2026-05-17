@@ -1,0 +1,107 @@
+import SwiftUI
+
+@MainActor
+final class AppLockManager: ObservableObject {
+    @Published private(set) var isLocked = false
+    @Published private(set) var isAuthenticating = false
+    @Published var errorMessage: String?
+
+    private let authenticationService: AppAuthenticationService
+    private let settingsStore: AppSettingsStore
+    private var hasAuthenticatedThisSession = false
+    private var lastBackgroundDate: Date?
+
+    init(
+        authenticationService: AppAuthenticationService = AppAuthenticationService(),
+        settingsStore: AppSettingsStore? = nil
+    ) {
+        self.authenticationService = authenticationService
+        self.settingsStore = settingsStore ?? AppSettingsStore.shared
+    }
+
+    func prepareForLaunch() {
+        guard settingsStore.isFaceIDLockEnabled else {
+            isLocked = false
+            hasAuthenticatedThisSession = false
+            return
+        }
+
+        isLocked = true
+    }
+
+    func handleScenePhaseChanged(_ phase: ScenePhase) async {
+        switch phase {
+        case .background:
+            if settingsStore.isFaceIDLockEnabled {
+                lastBackgroundDate = .now
+            }
+        case .active:
+            await authenticateIfNeeded()
+        case .inactive:
+            break
+        @unknown default:
+            break
+        }
+    }
+
+    func unlock() async {
+        await authenticate()
+    }
+
+    private func authenticateIfNeeded() async {
+        guard settingsStore.isFaceIDLockEnabled else {
+            isLocked = false
+            errorMessage = nil
+            hasAuthenticatedThisSession = false
+            return
+        }
+
+        guard shouldLockNow else { return }
+        isLocked = true
+        await authenticate()
+    }
+
+    private var shouldLockNow: Bool {
+        guard !isAuthenticating else { return false }
+
+        if !hasAuthenticatedThisSession {
+            return true
+        }
+
+        guard let timeout = settingsStore.lockTimeout.timeInterval else {
+            return false
+        }
+
+        if timeout == 0 {
+            return true
+        }
+
+        guard let lastBackgroundDate else {
+            return false
+        }
+
+        return Date().timeIntervalSince(lastBackgroundDate) >= timeout
+    }
+
+    private func authenticate() async {
+        guard !isAuthenticating else { return }
+
+        isAuthenticating = true
+        errorMessage = nil
+
+        let success = await authenticationService.authenticateForAppLock(
+            reason: "Unlock SlipDee."
+        )
+
+        isAuthenticating = false
+
+        if success {
+            isLocked = false
+            hasAuthenticatedThisSession = true
+            errorMessage = nil
+        } else {
+            isLocked = true
+            errorMessage = "Authentication failed. Please try again."
+        }
+    }
+}

@@ -3,8 +3,14 @@ import SwiftUI
 
 @main
 struct SlipWiseApp: App {
-    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
-    @AppStorage("appearanceMode") private var appearanceModeRawValue = AppAppearanceMode.system.rawValue
+    @Environment(\.scenePhase) private var scenePhase
+    @AppStorage(AppSettingsKey.hasSeenOnboarding) private var hasSeenOnboarding = false
+    @AppStorage(AppSettingsKey.appearanceMode) private var appearanceModeRawValue = AppAppearanceMode.system.rawValue
+    @AppStorage(AppSettingsKey.userDisplayName) private var userDisplayName = ""
+    @AppStorage(AppSettingsKey.hasCompletedNameSetup) private var hasCompletedNameSetup = false
+    @AppStorage(AppSettingsKey.isScreenshotProtectionEnabled) private var isScreenshotProtectionEnabled = false
+
+    @StateObject private var appLockManager = AppLockManager()
 
     private let sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -36,19 +42,52 @@ struct SlipWiseApp: App {
 
     var body: some Scene {
         WindowGroup {
-            Group {
-                if hasSeenOnboarding {
-                    MainTabView()
-                } else {
-                    OnboardingView {
-                        hasSeenOnboarding = true
+            ZStack {
+                Group {
+                    if shouldShowNameSetup {
+                        UserNameSetupView()
+                    } else if hasSeenOnboarding {
+                        MainTabView()
+                    } else {
+                        OnboardingView {
+                            hasSeenOnboarding = true
+                        }
                     }
+                }
+
+                if isScreenshotProtectionEnabled, scenePhase != .active {
+                    PrivacyOverlayView(
+                        title: "SlipDee",
+                        message: "Your financial data is protected."
+                    )
+                }
+
+                if appLockManager.isLocked {
+                    PrivacyOverlayView(
+                        title: "SlipDee Locked",
+                        message: appLockManager.errorMessage ?? "Authenticate to continue using SlipDee.",
+                        buttonTitle: appLockManager.isAuthenticating ? "Checking..." : "Unlock",
+                        systemImage: "faceid",
+                        action: {
+                            guard !appLockManager.isAuthenticating else { return }
+                            Task {
+                                await appLockManager.unlock()
+                            }
+                        }
+                    )
                 }
             }
             .preferredColorScheme(selectedAppearanceMode.colorScheme)
             .task {
+                appLockManager.prepareForLaunch()
                 // Seed small fictional samples so the charts and dashboard are useful on first launch.
                 await DemoDataSeeder.seedIfNeeded(container: sharedModelContainer)
+                await appLockManager.handleScenePhaseChanged(.active)
+            }
+            .onChange(of: scenePhase) { _, newPhase in
+                Task {
+                    await appLockManager.handleScenePhaseChanged(newPhase)
+                }
             }
         }
         .modelContainer(sharedModelContainer)
@@ -56,6 +95,11 @@ struct SlipWiseApp: App {
 
     private var selectedAppearanceMode: AppAppearanceMode {
         AppAppearanceMode(rawValue: appearanceModeRawValue) ?? .system
+    }
+
+    private var shouldShowNameSetup: Bool {
+        let trimmedName = userDisplayName.trimmingCharacters(in: .whitespacesAndNewlines)
+        return !hasCompletedNameSetup || trimmedName.isEmpty
     }
 }
 

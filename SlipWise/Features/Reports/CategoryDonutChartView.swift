@@ -3,6 +3,7 @@ import SwiftUI
 
 struct CategoryDonutChartView: View {
     let summary: CategorySpendingSummary
+    var isHideAmountsEnabled = false
 
     var body: some View {
         AppCard {
@@ -29,7 +30,7 @@ struct CategoryDonutChartView: View {
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(AppColors.secondaryText)
 
-                        Text(CurrencyFormatter.bahtString(from: summary.totalExpense))
+                        Text(AmountDisplayFormatter.display(amount: summary.totalExpense, isHidden: isHideAmountsEnabled))
                             .font(.system(size: 24, weight: .bold, design: .rounded))
                             .foregroundStyle(AppColors.primaryText)
                             .multilineTextAlignment(.center)

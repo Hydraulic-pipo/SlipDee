@@ -28,6 +28,9 @@ struct TransactionDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Query private var settingsList: [UserSettings]
+    @AppStorage(AppSettingsKey.isEditDeleteProtectionEnabled) private var isEditDeleteProtectionEnabled = true
+    @AppStorage(AppSettingsKey.isBiometricEditDeleteEnabled) private var isBiometricEditDeleteEnabled = true
+    @AppStorage(AppSettingsKey.isHideAmountsEnabled) private var isHideAmountsEnabled = false
 
     let transaction: TransactionItem
 
@@ -107,7 +110,7 @@ struct TransactionDetailView: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(AppColors.secondaryText)
 
-                Text(CurrencyFormatter.bahtString(from: transaction.amount))
+                Text(displayAmount)
                     .font(.system(size: 34, weight: .bold, design: .rounded))
                     .foregroundStyle(amountColor)
             }
@@ -210,20 +213,12 @@ struct TransactionDetailView: View {
         authenticationErrorMessage = nil
         pendingAction = action
 
-        let requiresProtection: Bool
-        switch action {
-        case .edit:
-            requiresProtection = settings?.isEditProtectionEnabled == true
-        case .delete:
-            requiresProtection = settings?.isDeleteProtectionEnabled == true
-        }
-
-        guard requiresProtection else {
+        guard isEditDeleteProtectionEnabled else {
             continueAuthenticatedAction()
             return
         }
 
-        let biometricsEnabled = settings?.isBiometricEditDeleteEnabled == true
+        let biometricsEnabled = isBiometricEditDeleteEnabled
         let passcodeAvailable = settings?.isEditDeletePasswordEnabled == true && passcodeService.hasPasscode(settings: settings)
 
         let result = await authenticationService.authenticateForSensitiveAction(
@@ -263,6 +258,17 @@ struct TransactionDetailView: View {
             dismiss()
         } catch {
             authenticationErrorMessage = "We couldn't delete this transaction. Please try again."
+        }
+    }
+
+    private var displayAmount: String {
+        switch transaction.type {
+        case .income:
+            return AmountDisplayFormatter.display(amount: transaction.amount, isHidden: isHideAmountsEnabled, showSign: true, isIncome: true)
+        case .expense:
+            return AmountDisplayFormatter.display(amount: transaction.amount, isHidden: isHideAmountsEnabled, showSign: true, isIncome: false)
+        case .transfer:
+            return AmountDisplayFormatter.display(amount: transaction.amount, isHidden: isHideAmountsEnabled)
         }
     }
 }

@@ -8,6 +8,12 @@ enum AppAuthenticationResult: Equatable {
 }
 
 final class AppAuthenticationService {
+    func canAuthenticateWithBiometrics() -> Bool {
+        let context = LAContext()
+        var error: NSError?
+        return context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
+    }
+
     func authenticateForSensitiveAction(reason: String) async -> Bool {
         let context = LAContext()
         var error: NSError?
@@ -45,6 +51,22 @@ final class AppAuthenticationService {
             return success ? .success : (passcodeAvailable ? .requiresPasscode : .failure)
         } catch {
             return passcodeAvailable ? .requiresPasscode : .failure
+        }
+    }
+
+    func authenticateForAppLock(reason: String) async -> Bool {
+        let context = LAContext()
+        context.localizedFallbackTitle = ""
+        var error: NSError?
+
+        guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
+            return false
+        }
+
+        do {
+            return try await context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason)
+        } catch {
+            return false
         }
     }
 }

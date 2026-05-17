@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct TransactionRowView: View {
+    @AppStorage(AppSettingsKey.isHideAmountsEnabled) private var isHideAmountsEnabled = false
     let transaction: TransactionItem
     var showsDisclosure = false
 
@@ -62,7 +63,7 @@ struct TransactionRowView: View {
                 Spacer(minLength: 12)
 
                 VStack(alignment: .trailing, spacing: 8) {
-                    Text(CurrencyFormatter.bahtString(from: transaction.amount))
+                    Text(displayAmount)
                         .font(.system(size: 18, weight: .bold, design: .rounded))
                         .foregroundStyle(amountColor)
 
@@ -82,6 +83,17 @@ struct TransactionRowView: View {
                         .padding(.top, 6)
                 }
             }
+        }
+    }
+
+    private var displayAmount: String {
+        switch transaction.type {
+        case .income:
+            return AmountDisplayFormatter.display(amount: transaction.amount, isHidden: isHideAmountsEnabled, showSign: true, isIncome: true)
+        case .expense:
+            return AmountDisplayFormatter.display(amount: transaction.amount, isHidden: isHideAmountsEnabled, showSign: true, isIncome: false)
+        case .transfer:
+            return AmountDisplayFormatter.display(amount: transaction.amount, isHidden: isHideAmountsEnabled)
         }
     }
 }

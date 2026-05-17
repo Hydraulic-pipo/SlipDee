@@ -2,25 +2,13 @@ import SwiftData
 import SwiftUI
 
 private enum SecurityPasscodePromptMode: Identifiable {
-    case setup(pendingProtection: PendingProtectionOption?)
+    case setup
     case change
-
-    enum PendingProtectionOption {
-        case edit
-        case delete
-    }
 
     var id: String {
         switch self {
-        case let .setup(pendingProtection):
-            switch pendingProtection {
-            case .edit:
-                return "setup-edit"
-            case .delete:
-                return "setup-delete"
-            case .none:
-                return "setup-generic"
-            }
+        case .setup:
+            return "setup"
         case .change:
             return "change"
         }
@@ -57,10 +45,13 @@ private enum SecurityPasscodePromptMode: Identifiable {
 struct EditDeleteSecurityView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var settingsList: [UserSettings]
+    @AppStorage(AppSettingsKey.isEditDeleteProtectionEnabled) private var isEditDeleteProtectionEnabled = true
+    @AppStorage(AppSettingsKey.isBiometricEditDeleteEnabled) private var isBiometricEditDeleteEnabled = true
 
     @State private var promptMode: SecurityPasscodePromptMode?
     @State private var helperMessage: String?
 
+    private let authenticationService = AppAuthenticationService()
     private let passcodeService = AppPasscodeService()
 
     private var settings: UserSettings? {
@@ -81,31 +72,17 @@ struct EditDeleteSecurityView: View {
 
                     settingsSection(title: "Protection") {
                         toggleRow(
-                            icon: "square.and.pencil",
-                            title: "Require authentication before editing",
-                            isOn: Binding(
-                                get: { settings?.isEditProtectionEnabled ?? false },
-                                set: updateEditProtection
-                            )
-                        )
-                        divider
-                        toggleRow(
-                            icon: "trash",
-                            title: "Require authentication before deleting",
-                            isOn: Binding(
-                                get: { settings?.isDeleteProtectionEnabled ?? false },
-                                set: updateDeleteProtection
-                            )
+                            icon: "lock.shield",
+                            title: "Require authentication before editing and deleting",
+                            subtitle: "When off, changes happen without biometric confirmation",
+                            isOn: Binding(get: { isEditDeleteProtectionEnabled }, set: updateEditDeleteProtection)
                         )
                         divider
                         toggleRow(
                             icon: "faceid",
                             title: "Use Face ID / Touch ID",
                             subtitle: "Biometrics are used before passcode fallback",
-                            isOn: Binding(
-                                get: { settings?.isBiometricEditDeleteEnabled ?? false },
-                                set: updateBiometricProtection
-                            )
+                            isOn: Binding(get: { isBiometricEditDeleteEnabled }, set: updateBiometricProtection)
                         )
                         divider
                         Button {
@@ -137,7 +114,10 @@ struct EditDeleteSecurityView: View {
         }
         .navigationTitle("Security")
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear(perform: ensureSettings)
+        .onAppear {
+            ensureSettings()
+            syncToStoredSettings()
+        }
         .sheet(item: $promptMode) { mode in
             PasscodePromptView(
                 title: mode.title,
@@ -156,7 +136,7 @@ struct EditDeleteSecurityView: View {
                     }
 
                     passcodeService.setPasscode(passcode, settings: settings)
-                    applyPendingProtectionIfNeeded(for: mode)
+                    applyProtectionState()
                     try? modelContext.save()
                     helperMessage = "Your passcode has been saved."
                     promptMode = nil
@@ -224,80 +204,69 @@ struct EditDeleteSecurityView: View {
     private func ensureSettings() {
         guard settings == nil else { return }
 
-        let userSettings = UserSettings()
+        let userSettings = UserSettings(
+            isEditProtectionEnabled: isEditDeleteProtectionEnabled,
+            isDeleteProtectionEnabled: isEditDeleteProtectionEnabled,
+            isBiometricEditDeleteEnabled: isBiometricEditDeleteEnabled
+        )
         modelContext.insert(userSettings)
         try? modelContext.save()
     }
 
-    private func updateEditProtection(_ isEnabled: Bool) {
+    private func syncToStoredSettings() {
         guard let settings else { return }
-        helperMessage = nil
-
-        guard isEnabled else {
-            settings.isEditProtectionEnabled = false
-            settings.touch()
-            try? modelContext.save()
-            return
-        }
-
-        if passcodeService.hasPasscode(settings: settings) {
-            settings.isEditProtectionEnabled = true
-            settings.isEditDeletePasswordEnabled = true
-            settings.touch()
-            try? modelContext.save()
-        } else {
-            promptMode = .setup(pendingProtection: .edit)
-        }
+        isEditDeleteProtectionEnabled = settings.isEditDeleteProtectionEnabled
+        isBiometricEditDeleteEnabled = settings.isBiometricEditDeleteEnabled || !passcodeService.hasPasscode(settings: settings)
     }
 
-    private func updateDeleteProtection(_ isEnabled: Bool) {
+    private func updateEditDeleteProtection(_ isEnabled: Bool) {
         guard let settings else { return }
         helperMessage = nil
 
         guard isEnabled else {
-            settings.isDeleteProtectionEnabled = false
-            settings.touch()
+            isEditDeleteProtectionEnabled = false
+            applyProtectionState()
             try? modelContext.save()
             return
         }
 
-        if passcodeService.hasPasscode(settings: settings) {
-            settings.isDeleteProtectionEnabled = true
-            settings.isEditDeletePasswordEnabled = true
-            settings.touch()
+        if authenticationService.canAuthenticateWithBiometrics() || passcodeService.hasPasscode(settings: settings) {
+            isEditDeleteProtectionEnabled = true
+            applyProtectionState()
             try? modelContext.save()
         } else {
-            promptMode = .setup(pendingProtection: .delete)
+            promptMode = .setup
         }
     }
 
     private func updateBiometricProtection(_ isEnabled: Bool) {
-        guard let settings else { return }
-        settings.isBiometricEditDeleteEnabled = isEnabled
-        settings.touch()
-        try? modelContext.save()
-        if isEnabled {
-            helperMessage = "Biometric authentication will be used first when available."
+        guard settings != nil else { return }
+        helperMessage = nil
+
+        guard isEnabled else {
+            isBiometricEditDeleteEnabled = false
+            applyProtectionState()
+            try? modelContext.save()
+            return
         }
+
+        guard authenticationService.canAuthenticateWithBiometrics() else {
+            isBiometricEditDeleteEnabled = false
+            helperMessage = "Face ID or Touch ID isn't available on this device. You can still use an app passcode."
+            return
+        }
+
+        isBiometricEditDeleteEnabled = true
+        applyProtectionState()
+        try? modelContext.save()
     }
 
-    private func applyPendingProtectionIfNeeded(for mode: SecurityPasscodePromptMode) {
+    private func applyProtectionState() {
         guard let settings else { return }
 
-        switch mode {
-        case let .setup(pendingProtection):
-            switch pendingProtection {
-            case .edit:
-                settings.isEditProtectionEnabled = true
-            case .delete:
-                settings.isDeleteProtectionEnabled = true
-            case .none:
-                break
-            }
-        case .change:
-            break
-        }
-
+        settings.isEditProtectionEnabled = isEditDeleteProtectionEnabled
+        settings.isDeleteProtectionEnabled = isEditDeleteProtectionEnabled
+        settings.isBiometricEditDeleteEnabled = isBiometricEditDeleteEnabled
         settings.isEditDeletePasswordEnabled = passcodeService.hasPasscode(settings: settings)
         settings.touch()
     }

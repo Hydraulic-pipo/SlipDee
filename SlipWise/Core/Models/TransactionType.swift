@@ -87,6 +87,23 @@ enum AppLockTimeout: String, Codable, CaseIterable, Identifiable {
         }
     }
 
+    var shortTitle: String {
+        switch self {
+        case .immediate:
+            return "Immediately"
+        case .oneMinute:
+            return "1 min"
+        case .fiveMinutes:
+            return "5 min"
+        case .fifteenMinutes:
+            return "15 min"
+        case .thirtyMinutes:
+            return "30 min"
+        case .never:
+            return "Never"
+        }
+    }
+
     var timeInterval: TimeInterval? {
         switch self {
         case .immediate:

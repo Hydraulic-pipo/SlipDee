@@ -2,9 +2,11 @@ import SwiftData
 import SwiftUI
 
 struct DashboardView: View {
+    @AppStorage(AppSettingsKey.userDisplayName) private var userDisplayName = ""
+    @AppStorage(AppSettingsKey.isHideAmountsEnabled) private var isHideAmountsEnabled = false
     @State private var showingManualTransactionForm = false
     @State private var showingSlipImport = false
-    @State private var greetingText = GreetingProvider.greeting()
+    @State private var greetingText = GreetingProvider.greeting(displayName: nil)
 
     @Query(sort: \TransactionItem.transactionDate, order: .reverse)
     private var transactions: [TransactionItem]
@@ -54,7 +56,10 @@ struct DashboardView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            greetingText = GreetingProvider.greeting()
+            refreshGreeting()
+        }
+        .onChange(of: userDisplayName) { _, _ in
+            refreshGreeting()
         }
         .sheet(isPresented: $showingManualTransactionForm) {
             ManualTransactionFormView()
@@ -113,13 +118,13 @@ struct DashboardView: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.white.opacity(0.84))
 
-            Text(CurrencyFormatter.bahtString(from: balanceTotal))
+            Text(AmountDisplayFormatter.display(amount: balanceTotal, isHidden: isHideAmountsEnabled))
                 .font(.system(size: 34, weight: .bold, design: .rounded))
                 .foregroundStyle(.white)
 
             HStack {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Income \(CurrencyFormatter.bahtString(from: incomeTotal))")
+                    Text("Income \(AmountDisplayFormatter.display(amount: incomeTotal, isHidden: isHideAmountsEnabled))")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.white)
                     Text("This month")
@@ -130,7 +135,7 @@ struct DashboardView: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 6) {
-                    Text("Spent \(CurrencyFormatter.bahtString(from: expenseTotal))")
+                    Text("Spent \(AmountDisplayFormatter.display(amount: expenseTotal, isHidden: isHideAmountsEnabled))")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.white)
                     Text("This month")
@@ -213,6 +218,10 @@ struct DashboardView: View {
             }
         }
         .buttonStyle(.plain)
+    }
+
+    private func refreshGreeting() {
+        greetingText = GreetingProvider.greeting(displayName: userDisplayName)
     }
 }
 

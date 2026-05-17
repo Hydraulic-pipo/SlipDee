@@ -19,6 +19,15 @@
 		1B8A000B0000000000000001 /* EditDeleteSecurityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A000A0000000000000001 /* EditDeleteSecurityView.swift */; };
 		1B8A000D0000000000000001 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A000C0000000000000001 /* SettingsView.swift */; };
 		1B8A00190000000000000001 /* AppearanceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00180000000000000001 /* AppearanceSettingsView.swift */; };
+		1B8A001B0000000000000001 /* UserNameSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A001A0000000000000001 /* UserNameSetupView.swift */; };
+		1B8A001D0000000000000001 /* EditDisplayNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A001C0000000000000001 /* EditDisplayNameView.swift */; };
+		1B8A001F0000000000000001 /* AppSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A001E0000000000000001 /* AppSettingsStore.swift */; };
+		1B8A00210000000000000001 /* AmountDisplayFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00200000000000000001 /* AmountDisplayFormatter.swift */; };
+		1B8A00230000000000000001 /* AppLockManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00220000000000000001 /* AppLockManager.swift */; };
+		1B8A00250000000000000001 /* PrivacyOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00240000000000000001 /* PrivacyOverlayView.swift */; };
+		1B8A00270000000000000001 /* LockTimeoutSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00260000000000000001 /* LockTimeoutSettingsView.swift */; };
+		1B8A00290000000000000001 /* SupportedBanksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00280000000000000001 /* SupportedBanksView.swift */; };
+		1B8A002B0000000000000001 /* ManageBankLogosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A002A0000000000000001 /* ManageBankLogosView.swift */; };
 		1B8A000F0000000000000001 /* ReportsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A000E0000000000000001 /* ReportsViewModel.swift */; };
 		1B8A00110000000000000001 /* CategorySpendingSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00100000000000000001 /* CategorySpendingSummary.swift */; };
 		1B8A00130000000000000001 /* CategoryDonutChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00120000000000000001 /* CategoryDonutChartView.swift */; };
@@ -63,6 +72,15 @@
 		1B8A000A0000000000000001 /* EditDeleteSecurityView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EditDeleteSecurityView.swift; sourceTree = "<group>"; };
 		1B8A000C0000000000000001 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1B8A00180000000000000001 /* AppearanceSettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppearanceSettingsView.swift; sourceTree = "<group>"; };
+		1B8A001A0000000000000001 /* UserNameSetupView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UserNameSetupView.swift; sourceTree = "<group>"; };
+		1B8A001C0000000000000001 /* EditDisplayNameView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EditDisplayNameView.swift; sourceTree = "<group>"; };
+		1B8A001E0000000000000001 /* AppSettingsStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppSettingsStore.swift; sourceTree = "<group>"; };
+		1B8A00200000000000000001 /* AmountDisplayFormatter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AmountDisplayFormatter.swift; sourceTree = "<group>"; };
+		1B8A00220000000000000001 /* AppLockManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppLockManager.swift; sourceTree = "<group>"; };
+		1B8A00240000000000000001 /* PrivacyOverlayView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PrivacyOverlayView.swift; sourceTree = "<group>"; };
+		1B8A00260000000000000001 /* LockTimeoutSettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LockTimeoutSettingsView.swift; sourceTree = "<group>"; };
+		1B8A00280000000000000001 /* SupportedBanksView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SupportedBanksView.swift; sourceTree = "<group>"; };
+		1B8A002A0000000000000001 /* ManageBankLogosView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ManageBankLogosView.swift; sourceTree = "<group>"; };
 		1B8A000E0000000000000001 /* ReportsViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReportsViewModel.swift; sourceTree = "<group>"; };
 		1B8A00100000000000000001 /* CategorySpendingSummary.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategorySpendingSummary.swift; sourceTree = "<group>"; };
 		1B8A00120000000000000001 /* CategoryDonutChartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategoryDonutChartView.swift; sourceTree = "<group>"; };
@@ -126,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				1A73F1E142271D73982A4B00 /* OnboardingView.swift */,
+				1B8A001A0000000000000001 /* UserNameSetupView.swift */,
 			);
 			name = Onboarding;
 			path = Onboarding;
@@ -154,6 +173,7 @@
 			isa = PBXGroup;
 			children = (
 				1B8A00000000000000000001 /* AppAuthenticationService.swift */,
+				1B8A00220000000000000001 /* AppLockManager.swift */,
 				1B8A00020000000000000001 /* AppPasscodeService.swift */,
 				D43D0852A6C6B05C84BECC63 /* OCRService.swift */,
 				E382CC0B39307629A2DB7BBA /* SlipParserSamples.swift */,
@@ -180,9 +200,13 @@
 			isa = PBXGroup;
 			children = (
 				1B8A00180000000000000001 /* AppearanceSettingsView.swift */,
+				1B8A001C0000000000000001 /* EditDisplayNameView.swift */,
 				1B8A000A0000000000000001 /* EditDeleteSecurityView.swift */,
+				1B8A00260000000000000001 /* LockTimeoutSettingsView.swift */,
+				1B8A002A0000000000000001 /* ManageBankLogosView.swift */,
 				51C37FAB029974441AC84C18 /* PrivacySettingsView.swift */,
 				1B8A000C0000000000000001 /* SettingsView.swift */,
+				1B8A00280000000000000001 /* SupportedBanksView.swift */,
 			);
 			name = Settings;
 			path = Settings;
@@ -192,9 +216,19 @@
 			isa = PBXGroup;
 			children = (
 				1B8A00040000000000000001 /* PasscodePromptView.swift */,
+				1B8A00240000000000000001 /* PrivacyOverlayView.swift */,
 			);
 			name = Components;
 			path = Components;
+			sourceTree = "<group>";
+		};
+		53A1C0020000000000000001 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				1B8A001E0000000000000001 /* AppSettingsStore.swift */,
+			);
+			name = Settings;
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		5515E106C66366346AAA65F4 /* Dashboard */ = {
@@ -248,6 +282,7 @@
 		995775FEC8442F2D04F50F0A /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				1B8A00200000000000000001 /* AmountDisplayFormatter.swift */,
 				06CD4C5D7D270A6E9B249819 /* CurrencyFormatter.swift */,
 				8C1E25C9AC99036A787E8482 /* DateParsers.swift */,
 				C9D8C8431A7EBBD33DFDD8E6 /* DemoDataSeeder.swift */,
@@ -273,6 +308,7 @@
 			children = (
 				53A1C0010000000000000001 /* Components */,
 				574F3D38E2CC8A389124E9A4 /* Models */,
+				53A1C0020000000000000001 /* Settings */,
 				430273E2AD2C524965B6D517 /* Services */,
 				995775FEC8442F2D04F50F0A /* Utilities */,
 			);
@@ -421,10 +457,14 @@
 				2C72E8FF63FB2584898C1493 /* TransactionType.swift in Sources */,
 				1B8A00050000000000000001 /* PasscodePromptView.swift in Sources */,
 				1B8A00010000000000000001 /* AppAuthenticationService.swift in Sources */,
+				1B8A00230000000000000001 /* AppLockManager.swift in Sources */,
 				1B8A00030000000000000001 /* AppPasscodeService.swift in Sources */,
 				97C86A63C9D6399899ADF413 /* OCRService.swift in Sources */,
 				EC1F8D89DFBCCB10A903445F /* SlipParserSamples.swift in Sources */,
 				7DDCD86B4AFFBDBDDDAE5303 /* SlipParserService.swift in Sources */,
+				1B8A001F0000000000000001 /* AppSettingsStore.swift in Sources */,
+				1B8A00250000000000000001 /* PrivacyOverlayView.swift in Sources */,
+				1B8A00210000000000000001 /* AmountDisplayFormatter.swift in Sources */,
 				7C4D7495E4BEF38412C147D4 /* CurrencyFormatter.swift in Sources */,
 				9580BCAFF1868544EF35D4F5 /* DateParsers.swift in Sources */,
 				FA8ADAB2FF9DB7AD6F398939 /* DemoDataSeeder.swift in Sources */,
@@ -440,12 +480,17 @@
 				C41FA8FDD05C7646631F0529 /* ScanSlipView.swift in Sources */,
 				25AE240C84432F7A287F68C9 /* ScanSlipViewModel.swift in Sources */,
 				1B8A00190000000000000001 /* AppearanceSettingsView.swift in Sources */,
+				1B8A001D0000000000000001 /* EditDisplayNameView.swift in Sources */,
 				1B8A000B0000000000000001 /* EditDeleteSecurityView.swift in Sources */,
+				1B8A00270000000000000001 /* LockTimeoutSettingsView.swift in Sources */,
+				1B8A002B0000000000000001 /* ManageBankLogosView.swift in Sources */,
 				AC3656C7632B54E56E1A5B8E /* PrivacySettingsView.swift in Sources */,
 				1B8A000D0000000000000001 /* SettingsView.swift in Sources */,
+				1B8A00290000000000000001 /* SupportedBanksView.swift in Sources */,
 				1B8A00090000000000000001 /* EditTransactionView.swift in Sources */,
 				16825CE577253F1F0DB52101 /* ManualTransactionFormView.swift in Sources */,
 				1A73F1E142271D73982A4B01 /* OnboardingView.swift in Sources */,
+				1B8A001B0000000000000001 /* UserNameSetupView.swift in Sources */,
 				1B8A00070000000000000001 /* TransactionDetailView.swift in Sources */,
 				91065A62396BE4D275A9D201 /* TransactionRowView.swift in Sources */,
 				939154A6F58BDD511DF2CE65 /* TransactionListView.swift in Sources */,

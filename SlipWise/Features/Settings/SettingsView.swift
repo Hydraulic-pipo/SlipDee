@@ -1,18 +1,18 @@
-import SwiftData
 import SwiftUI
 
 struct SettingsView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var settingsList: [UserSettings]
-    @AppStorage("appearanceMode") private var appearanceModeRawValue = AppAppearanceMode.system.rawValue
+    @AppStorage(AppSettingsKey.appearanceMode) private var appearanceModeRawValue = AppAppearanceMode.system.rawValue
+    @AppStorage(AppSettingsKey.userDisplayName) private var userDisplayName = ""
+    @AppStorage(AppSettingsKey.isFaceIDLockEnabled) private var isFaceIDLockEnabled = false
+    @AppStorage(AppSettingsKey.isEditDeleteProtectionEnabled) private var isEditDeleteProtectionEnabled = true
+    @AppStorage(AppSettingsKey.lockTimeout) private var lockTimeoutRawValue = AppLockTimeout.immediate.rawValue
+    @AppStorage(AppSettingsKey.isHideAmountsEnabled) private var isHideAmountsEnabled = false
+    @AppStorage(AppSettingsKey.isScreenshotProtectionEnabled) private var isScreenshotProtectionEnabled = false
+    @AppStorage(AppSettingsKey.isOnDeviceProcessingEnabled) private var isOnDeviceProcessingEnabled = true
 
-    @State private var hideAmounts = false
-    @State private var screenshotProtection = false
-    @State private var processingOnDevice = true
+    @State private var helperMessage: String?
 
-    private var settings: UserSettings? {
-        settingsList.first
-    }
+    private let authenticationService = AppAuthenticationService()
 
     var body: some View {
         AppScreen {
@@ -22,18 +22,48 @@ struct SettingsView: View {
                         .font(.system(size: 32, weight: .bold, design: .rounded))
                         .foregroundStyle(AppColors.primaryText)
 
+                    profileSection
                     appearanceSection
                     privacySection
                     bankSourcesSection
                     dataSection
                     aboutSection
+
+                    if let helperMessage {
+                        AppCard {
+                            Text(helperMessage)
+                                .font(.subheadline)
+                                .foregroundStyle(AppColors.secondaryText)
+                        }
+                    }
                 }
                 .padding(.horizontal, AppSpacing.page)
                 .padding(.top, 18)
                 .padding(.bottom, 32)
             }
         }
-        .onAppear(perform: ensureSettings)
+        .onAppear {
+            if !isOnDeviceProcessingEnabled {
+                isOnDeviceProcessingEnabled = true
+            }
+        }
+    }
+
+    private var profileSection: some View {
+        settingsSection(title: "Profile") {
+            NavigationLink {
+                EditDisplayNameView()
+            } label: {
+                SettingsRowView(
+                    icon: "person.crop.circle",
+                    title: "Display Name",
+                    subtitle: "Change the name shown in your greeting",
+                    trailingText: trimmedDisplayName.isEmpty ? "Not Set" : trimmedDisplayName
+                )
+                .padding(.vertical, 10)
+            }
+            .buttonStyle(.plain)
+        }
     }
 
     private var appearanceSection: some View {
@@ -58,11 +88,8 @@ struct SettingsView: View {
             toggleRow(
                 icon: "faceid",
                 title: "Face ID Lock",
-                subtitle: "Unlock the app quickly",
-                isOn: Binding(
-                    get: { settings?.isBiometricUnlockEnabled ?? false },
-                    set: updateBiometricUnlock
-                )
+                subtitle: "Require authentication when you return to the app",
+                isOn: Binding(get: { isFaceIDLockEnabled }, set: updateFaceIDLock)
             )
             divider
             NavigationLink {
@@ -72,40 +99,91 @@ struct SettingsView: View {
                     icon: "lock.shield",
                     title: "Edit & Delete Protection",
                     subtitle: "Require authentication before sensitive actions",
-                    trailingText: (settings?.isEditDeleteProtectionEnabled ?? false) ? "On" : "Off"
+                    trailingText: isEditDeleteProtectionEnabled ? "On" : "Off"
                 )
                 .padding(.vertical, 10)
             }
             .buttonStyle(.plain)
             divider
-            SettingsRowView(icon: "timer", title: "Lock Timeout", trailingText: settings?.appLockTimeout.title ?? "Immediately")
+            NavigationLink {
+                LockTimeoutSettingsView()
+            } label: {
+                SettingsRowView(
+                    icon: "timer",
+                    title: "Lock Timeout",
+                    trailingText: selectedLockTimeout.shortTitle
+                )
                 .padding(.vertical, 10)
+            }
+            .buttonStyle(.plain)
             divider
-            toggleRow(icon: "eye.slash", title: "Hide Amounts", isOn: $hideAmounts)
+            toggleRow(
+                icon: "eye.slash",
+                title: "Hide Amounts",
+                subtitle: "Mask balances and spending across the app",
+                isOn: $isHideAmountsEnabled
+            )
             divider
-            toggleRow(icon: "shield", title: "Screenshot Protection", isOn: $screenshotProtection)
+            toggleRow(
+                icon: "shield",
+                title: "Screenshot Protection",
+                subtitle: "Hide sensitive data in the app switcher",
+                isOn: $isScreenshotProtectionEnabled
+            )
             divider
-            toggleRow(icon: "lock.doc", title: "Data Processing", subtitle: "On-device only", isOn: $processingOnDevice)
+            toggleRow(
+                icon: "lock.doc",
+                title: "Data Processing",
+                subtitle: "SlipDee currently processes data on this device only.",
+                isOn: $isOnDeviceProcessingEnabled,
+                isDisabled: true
+            )
         }
     }
 
     private var bankSourcesSection: some View {
         settingsSection(title: "Bank Sources") {
-            SettingsRowView(icon: "building.columns", title: "Supported Banks")
-                .padding(.vertical, 10)
+            NavigationLink {
+                SupportedBanksView()
+            } label: {
+                SettingsRowView(icon: "building.columns", title: "Supported Banks")
+                    .padding(.vertical, 10)
+            }
+            .buttonStyle(.plain)
             divider
-            SettingsRowView(icon: "photo", title: "Manage Bank Logos")
+            NavigationLink {
+                ManageBankLogosView()
+            } label: {
+                SettingsRowView(
+                    icon: "photo",
+                    title: "Manage Bank Logos",
+                    trailingText: "Coming Soon"
+                )
                 .padding(.vertical, 10)
+            }
+            .buttonStyle(.plain)
         }
     }
 
     private var dataSection: some View {
         settingsSection(title: "Data & Export") {
-            SettingsRowView(icon: "square.and.arrow.up", title: "Export Data")
-                .padding(.vertical, 10)
+            SettingsRowView(
+                icon: "square.and.arrow.up",
+                title: "Export Data",
+                subtitle: "Export tools are not available yet.",
+                trailingText: "Coming Soon",
+                showsChevron: false
+            )
+            .padding(.vertical, 10)
             divider
-            SettingsRowView(icon: "icloud", title: "Backup to iCloud")
-                .padding(.vertical, 10)
+            SettingsRowView(
+                icon: "icloud",
+                title: "Backup to iCloud",
+                subtitle: "iCloud backup has not been enabled yet.",
+                trailingText: "Coming Soon",
+                showsChevron: false
+            )
+            .padding(.vertical, 10)
         }
     }
 
@@ -114,10 +192,10 @@ struct SettingsView: View {
             SettingsRowView(icon: "info.circle", title: "Version", trailingText: "1.0", showsChevron: false)
                 .padding(.vertical, 10)
             divider
-            SettingsRowView(icon: "doc.text", title: "Terms of Service")
+            SettingsRowView(icon: "doc.text", title: "Terms of Service", trailingText: "Coming Soon", showsChevron: false)
                 .padding(.vertical, 10)
             divider
-            SettingsRowView(icon: "hand.raised", title: "Privacy Policy")
+            SettingsRowView(icon: "hand.raised", title: "Privacy Policy", trailingText: "Coming Soon", showsChevron: false)
                 .padding(.vertical, 10)
         }
     }
@@ -146,7 +224,8 @@ struct SettingsView: View {
         icon: String,
         title: String,
         subtitle: String? = nil,
-        isOn: Binding<Bool>
+        isOn: Binding<Bool>,
+        isDisabled: Bool = false
     ) -> some View {
         HStack(spacing: 14) {
             Image(systemName: icon)
@@ -173,26 +252,38 @@ struct SettingsView: View {
             Toggle("", isOn: isOn)
                 .labelsHidden()
                 .tint(AppColors.primaryTeal)
+                .disabled(isDisabled)
         }
         .padding(.vertical, 10)
+        .opacity(isDisabled ? 0.72 : 1)
     }
 
-    private func ensureSettings() {
-        guard settings == nil else { return }
+    private func updateFaceIDLock(_ isEnabled: Bool) {
+        helperMessage = nil
 
-        let userSettings = UserSettings()
-        modelContext.insert(userSettings)
-        try? modelContext.save()
-    }
+        guard isEnabled else {
+            isFaceIDLockEnabled = false
+            return
+        }
 
-    private func updateBiometricUnlock(_ isEnabled: Bool) {
-        guard let settings else { return }
-        settings.isBiometricUnlockEnabled = isEnabled
-        settings.touch()
-        try? modelContext.save()
+        guard authenticationService.canAuthenticateWithBiometrics() else {
+            isFaceIDLockEnabled = false
+            helperMessage = "Face ID or Touch ID isn't available on this device yet, so app lock can't be enabled."
+            return
+        }
+
+        isFaceIDLockEnabled = true
     }
 
     private var selectedAppearanceMode: AppAppearanceMode {
         AppAppearanceMode(rawValue: appearanceModeRawValue) ?? .system
+    }
+
+    private var selectedLockTimeout: AppLockTimeout {
+        AppLockTimeout(rawValue: lockTimeoutRawValue) ?? .immediate
+    }
+
+    private var trimmedDisplayName: String {
+        userDisplayName.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

@@ -3,6 +3,7 @@ import SwiftData
 import SwiftUI
 
 struct ReportsView: View {
+    @AppStorage(AppSettingsKey.isHideAmountsEnabled) private var isHideAmountsEnabled = false
     @State private var selectedRange: ReportRange = .month
     @State private var selectedDate: Date = .now
     @Query(sort: \TransactionCategory.sortOrder)
@@ -80,7 +81,7 @@ struct ReportsView: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(AppColors.secondaryText)
 
-                Text(CurrencyFormatter.bahtString(from: totalSpent))
+                Text(AmountDisplayFormatter.display(amount: totalSpent, isHidden: isHideAmountsEnabled))
                     .font(.system(size: 32, weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.primaryText)
 
@@ -142,8 +143,8 @@ struct ReportsView: View {
                     message: "Add a transaction or scan a slip to see your category chart."
                 )
             } else {
-                CategoryDonutChartView(summary: categorySummary)
-                CategoryBreakdownListView(items: categorySummary.items)
+                CategoryDonutChartView(summary: categorySummary, isHideAmountsEnabled: isHideAmountsEnabled)
+                CategoryBreakdownListView(items: categorySummary.items, isHideAmountsEnabled: isHideAmountsEnabled)
             }
         }
     }
