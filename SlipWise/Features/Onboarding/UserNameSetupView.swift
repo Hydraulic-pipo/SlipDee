@@ -1,9 +1,10 @@
 import SwiftUI
 
 struct UserNameSetupView: View {
-    @AppStorage("userDisplayName") private var userDisplayName = ""
-    @AppStorage("hasCompletedNameSetup") private var hasCompletedNameSetup = false
-    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
+    @AppStorage(AppSettingsKey.userDisplayName) private var userDisplayName = ""
+    @AppStorage(AppSettingsKey.hasCompletedNameSetup) private var hasCompletedNameSetup = false
+    @AppStorage(AppSettingsKey.hasCompletedSecuritySetup) private var hasCompletedSecuritySetup = false
+    @AppStorage(AppSettingsKey.hasSeenOnboarding) private var hasSeenOnboarding = false
 
     @State private var nameText = ""
     @State private var validationMessage: String?
@@ -95,6 +96,7 @@ struct UserNameSetupView: View {
 
         userDisplayName = trimmedName
         hasCompletedNameSetup = true
+        hasCompletedSecuritySetup = false
         hasSeenOnboarding = true
         validationMessage = nil
     }

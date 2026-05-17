@@ -8,6 +8,7 @@ struct SlipWiseApp: App {
     @AppStorage(AppSettingsKey.appearanceMode) private var appearanceModeRawValue = AppAppearanceMode.system.rawValue
     @AppStorage(AppSettingsKey.userDisplayName) private var userDisplayName = ""
     @AppStorage(AppSettingsKey.hasCompletedNameSetup) private var hasCompletedNameSetup = false
+    @AppStorage(AppSettingsKey.hasCompletedSecuritySetup) private var hasCompletedSecuritySetup = false
     @AppStorage(AppSettingsKey.isScreenshotProtectionEnabled) private var isScreenshotProtectionEnabled = false
 
     @StateObject private var appLockManager = AppLockManager()
@@ -46,6 +47,10 @@ struct SlipWiseApp: App {
                 Group {
                     if shouldShowNameSetup {
                         UserNameSetupView()
+                    } else if shouldShowSecuritySetup {
+                        FirstLaunchSecuritySetupView()
+                    } else if appLockManager.isLocked {
+                        AppLockView(lockManager: appLockManager)
                     } else if hasSeenOnboarding {
                         MainTabView()
                     } else {
@@ -59,21 +64,6 @@ struct SlipWiseApp: App {
                     PrivacyOverlayView(
                         title: "SlipDee",
                         message: "Your financial data is protected."
-                    )
-                }
-
-                if appLockManager.isLocked {
-                    PrivacyOverlayView(
-                        title: "SlipDee Locked",
-                        message: appLockManager.errorMessage ?? "Authenticate to continue using SlipDee.",
-                        buttonTitle: appLockManager.isAuthenticating ? "Checking..." : "Unlock",
-                        systemImage: "faceid",
-                        action: {
-                            guard !appLockManager.isAuthenticating else { return }
-                            Task {
-                                await appLockManager.unlock()
-                            }
-                        }
                     )
                 }
             }
@@ -100,6 +90,10 @@ struct SlipWiseApp: App {
     private var shouldShowNameSetup: Bool {
         let trimmedName = userDisplayName.trimmingCharacters(in: .whitespacesAndNewlines)
         return !hasCompletedNameSetup || trimmedName.isEmpty
+    }
+
+    private var shouldShowSecuritySetup: Bool {
+        hasCompletedNameSetup && !shouldShowNameSetup && !hasCompletedSecuritySetup
     }
 }
 

@@ -5,12 +5,15 @@ enum AppSettingsKey {
     static let isFaceIDLockEnabled = "isFaceIDLockEnabled"
     static let isEditDeleteProtectionEnabled = "isEditDeleteProtectionEnabled"
     static let isBiometricEditDeleteEnabled = "isBiometricEditDeleteEnabled"
+    static let isAppPasscodeEnabled = "isAppPasscodeEnabled"
+    static let appPasscodeHash = "appPasscodeHash"
     static let lockTimeout = "lockTimeout"
     static let isHideAmountsEnabled = "isHideAmountsEnabled"
     static let isScreenshotProtectionEnabled = "isScreenshotProtectionEnabled"
     static let isOnDeviceProcessingEnabled = "isOnDeviceProcessingEnabled"
     static let userDisplayName = "userDisplayName"
     static let hasCompletedNameSetup = "hasCompletedNameSetup"
+    static let hasCompletedSecuritySetup = "hasCompletedSecuritySetup"
     static let hasSeenOnboarding = "hasSeenOnboarding"
 }
 
@@ -58,6 +61,16 @@ final class AppSettingsStore: ObservableObject {
         set { defaults.set(newValue, forKey: AppSettingsKey.isBiometricEditDeleteEnabled) }
     }
 
+    var isAppPasscodeEnabled: Bool {
+        get { defaults.bool(forKey: AppSettingsKey.isAppPasscodeEnabled) }
+        set { defaults.set(newValue, forKey: AppSettingsKey.isAppPasscodeEnabled) }
+    }
+
+    var appPasscodeHash: String {
+        get { defaults.string(forKey: AppSettingsKey.appPasscodeHash) ?? "" }
+        set { defaults.set(newValue, forKey: AppSettingsKey.appPasscodeHash) }
+    }
+
     var lockTimeout: AppLockTimeout {
         get {
             AppLockTimeout(rawValue: defaults.string(forKey: AppSettingsKey.lockTimeout) ?? AppLockTimeout.immediate.rawValue) ?? .immediate
@@ -85,5 +98,25 @@ final class AppSettingsStore: ObservableObject {
             return defaults.bool(forKey: AppSettingsKey.isOnDeviceProcessingEnabled)
         }
         set { defaults.set(newValue, forKey: AppSettingsKey.isOnDeviceProcessingEnabled) }
+    }
+
+    var userDisplayName: String {
+        get { defaults.string(forKey: AppSettingsKey.userDisplayName) ?? "" }
+        set { defaults.set(newValue, forKey: AppSettingsKey.userDisplayName) }
+    }
+
+    var hasCompletedNameSetup: Bool {
+        get { defaults.bool(forKey: AppSettingsKey.hasCompletedNameSetup) }
+        set { defaults.set(newValue, forKey: AppSettingsKey.hasCompletedNameSetup) }
+    }
+
+    var hasCompletedSecuritySetup: Bool {
+        get { defaults.bool(forKey: AppSettingsKey.hasCompletedSecuritySetup) }
+        set { defaults.set(newValue, forKey: AppSettingsKey.hasCompletedSecuritySetup) }
+    }
+
+    var hasSeenOnboarding: Bool {
+        get { defaults.bool(forKey: AppSettingsKey.hasSeenOnboarding) }
+        set { defaults.set(newValue, forKey: AppSettingsKey.hasSeenOnboarding) }
     }
 }

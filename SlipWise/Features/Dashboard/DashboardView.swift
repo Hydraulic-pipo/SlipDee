@@ -8,24 +8,36 @@ struct DashboardView: View {
     @State private var showingSlipImport = false
     @State private var showingMultipleSlipScan = false
     @State private var showingScanOptions = false
+    @State private var showingMonthPicker = false
     @State private var greetingText = GreetingProvider.greeting(displayName: nil)
+    @State private var selectedMonth: Int
+    @State private var selectedYear: Int
 
     @Query(sort: \TransactionItem.transactionDate, order: .reverse)
     private var transactions: [TransactionItem]
 
-    private var thisMonthTransactions: [TransactionItem] {
+    init() {
         let now = Date()
-        return transactions.filter { Calendar.current.isDate($0.transactionDate, equalTo: now, toGranularity: .month) }
+        let calendar = Calendar.current
+        _selectedMonth = State(initialValue: calendar.component(.month, from: now))
+        _selectedYear = State(initialValue: calendar.component(.year, from: now))
+    }
+
+    private var selectedMonthTransactions: [TransactionItem] {
+        transactions.filter {
+            let components = Calendar.current.dateComponents([.month, .year], from: $0.transactionDate)
+            return components.month == selectedMonth && components.year == selectedYear
+        }
     }
 
     private var incomeTotal: Double {
-        thisMonthTransactions
+        selectedMonthTransactions
             .filter { $0.type == .income }
             .reduce(0) { $0 + $1.amount }
     }
 
     private var expenseTotal: Double {
-        thisMonthTransactions
+        selectedMonthTransactions
             .filter { $0.type == .expense }
             .reduce(0) { $0 + $1.amount }
     }
@@ -35,11 +47,11 @@ struct DashboardView: View {
     }
 
     private var recentTransactions: [TransactionItem] {
-        Array(transactions.prefix(4))
+        Array(selectedMonthTransactions.sorted { $0.transactionDate > $1.transactionDate }.prefix(4))
     }
 
     private var monthTitle: String {
-        DateFormatter.dashboardMonth.string(from: .now)
+        MonthYearFormatter.displayName(month: selectedMonth, year: selectedYear)
     }
 
     var body: some View {
@@ -76,6 +88,12 @@ struct DashboardView: View {
                 MultipleSlipScanView()
             }
         }
+        .sheet(isPresented: $showingMonthPicker) {
+            MonthPickerSheet(
+                selectedMonth: $selectedMonth,
+                selectedYear: $selectedYear
+            )
+        }
         .confirmationDialog("Scan Slips", isPresented: $showingScanOptions, titleVisibility: .visible) {
             Button("Scan One Slip") {
                 showingSlipImport = true
@@ -96,23 +114,28 @@ struct DashboardView: View {
                     .font(.system(size: 28, weight: .bold, design: .rounded))
                     .foregroundStyle(AppColors.primaryText)
 
-                HStack(spacing: 8) {
-                    Text(monthTitle)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(AppColors.primaryText)
+                Button {
+                    showingMonthPicker = true
+                } label: {
+                    HStack(spacing: 8) {
+                        Text(monthTitle)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppColors.primaryText)
 
-                    Image(systemName: "chevron.down")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(AppColors.secondaryText)
+                        Image(systemName: "chevron.down")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(AppColors.secondaryText)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(AppColors.cardBackground)
+                    .overlay(
+                        Capsule()
+                            .stroke(AppColors.border, lineWidth: 1)
+                    )
+                    .clipShape(Capsule())
                 }
-                .padding(.horizontal, 14)
-                .padding(.vertical, 10)
-                .background(AppColors.cardBackground)
-                .overlay(
-                    Capsule()
-                        .stroke(AppColors.border, lineWidth: 1)
-                )
-                .clipShape(Capsule())
+                .buttonStyle(.plain)
             }
 
             Spacer()
@@ -145,7 +168,7 @@ struct DashboardView: View {
                     Text("Income \(AmountDisplayFormatter.display(amount: incomeTotal, isHidden: isHideAmountsEnabled))")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.white)
-                    Text("This month")
+                    Text(monthTitle)
                         .font(.caption)
                         .foregroundStyle(.white.opacity(0.78))
                 }
@@ -156,7 +179,7 @@ struct DashboardView: View {
                     Text("Spent \(AmountDisplayFormatter.display(amount: expenseTotal, isHidden: isHideAmountsEnabled))")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.white)
-                    Text("This month")
+                    Text(monthTitle)
                         .font(.caption)
                         .foregroundStyle(.white.opacity(0.78))
                 }
@@ -198,8 +221,8 @@ struct DashboardView: View {
             if recentTransactions.isEmpty {
                 EmptyStateCard(
                     icon: "tray",
-                    title: "No transactions yet",
-                    message: "Add a manual entry or import your first slip to see activity here."
+                    title: "No transactions for this month",
+                    message: "Add a transaction or scan a slip to start tracking this month."
                 )
             } else {
                 ForEach(recentTransactions) { transaction in
@@ -241,12 +264,4 @@ struct DashboardView: View {
     private func refreshGreeting() {
         greetingText = GreetingProvider.greeting(displayName: userDisplayName)
     }
-}
-
-private extension DateFormatter {
-    static let dashboardMonth: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
-        return formatter
-    }()
 }

@@ -17,10 +17,11 @@ final class AppLockManager: ObservableObject {
     ) {
         self.authenticationService = authenticationService
         self.settingsStore = settingsStore ?? AppSettingsStore.shared
+        prepareForLaunch()
     }
 
     func prepareForLaunch() {
-        guard settingsStore.isFaceIDLockEnabled else {
+        guard isProtectionEnabled else {
             isLocked = false
             hasAuthenticatedThisSession = false
             return
@@ -32,7 +33,7 @@ final class AppLockManager: ObservableObject {
     func handleScenePhaseChanged(_ phase: ScenePhase) async {
         switch phase {
         case .background:
-            if settingsStore.isFaceIDLockEnabled {
+            if isProtectionEnabled {
                 lastBackgroundDate = .now
             }
         case .active:
@@ -45,11 +46,33 @@ final class AppLockManager: ObservableObject {
     }
 
     func unlock() async {
+        await unlockWithBiometrics()
+    }
+
+    func unlockWithBiometrics() async {
+        guard canUseBiometricUnlock else {
+            errorMessage = "Biometric authentication is not available."
+            return
+        }
+
         await authenticate()
     }
 
+    func unlockWithPasscode(_ passcode: String) -> Bool {
+        guard requiresPasscode, AppPasscodeService.verify(passcode, hash: settingsStore.appPasscodeHash) else {
+            isLocked = true
+            errorMessage = "Incorrect passcode. Please try again."
+            return false
+        }
+
+        isLocked = false
+        hasAuthenticatedThisSession = true
+        errorMessage = nil
+        return true
+    }
+
     private func authenticateIfNeeded() async {
-        guard settingsStore.isFaceIDLockEnabled else {
+        guard isProtectionEnabled else {
             isLocked = false
             errorMessage = nil
             hasAuthenticatedThisSession = false
@@ -58,6 +81,12 @@ final class AppLockManager: ObservableObject {
 
         guard shouldLockNow else { return }
         isLocked = true
+
+        guard canUseBiometricUnlock else {
+            errorMessage = nil
+            return
+        }
+
         await authenticate()
     }
 
@@ -103,5 +132,17 @@ final class AppLockManager: ObservableObject {
             isLocked = true
             errorMessage = "Authentication failed. Please try again."
         }
+    }
+
+    var canUseBiometricUnlock: Bool {
+        settingsStore.isFaceIDLockEnabled && authenticationService.canAuthenticateWithBiometrics()
+    }
+
+    var requiresPasscode: Bool {
+        settingsStore.isAppPasscodeEnabled && !settingsStore.appPasscodeHash.isEmpty
+    }
+
+    private var isProtectionEnabled: Bool {
+        settingsStore.isFaceIDLockEnabled || requiresPasscode
     }
 }

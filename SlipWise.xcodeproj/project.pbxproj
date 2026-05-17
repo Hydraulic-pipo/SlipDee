@@ -42,6 +42,10 @@
 		1B8A00430000000000000001 /* ShareSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00420000000000000001 /* ShareSheetView.swift */; };
 		1B8A00450000000000000001 /* DataExportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00440000000000000001 /* DataExportViewModel.swift */; };
 		1B8A00470000000000000001 /* DataExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00460000000000000001 /* DataExportView.swift */; };
+		1B8A00490000000000000001 /* FirstLaunchSecuritySetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00480000000000000001 /* FirstLaunchSecuritySetupView.swift */; };
+		1B8A004B0000000000000001 /* AppLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A004A0000000000000001 /* AppLockView.swift */; };
+		1B8A004D0000000000000001 /* MonthYearFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A004C0000000000000001 /* MonthYearFormatter.swift */; };
+		1B8A004F0000000000000001 /* MonthPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A004E0000000000000001 /* MonthPickerSheet.swift */; };
 		1B8A000F0000000000000001 /* ReportsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A000E0000000000000001 /* ReportsViewModel.swift */; };
 		1B8A00110000000000000001 /* CategorySpendingSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00100000000000000001 /* CategorySpendingSummary.swift */; };
 		1B8A00130000000000000001 /* CategoryDonutChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00120000000000000001 /* CategoryDonutChartView.swift */; };
@@ -109,6 +113,10 @@
 		1B8A00420000000000000001 /* ShareSheetView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ShareSheetView.swift; sourceTree = "<group>"; };
 		1B8A00440000000000000001 /* DataExportViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataExportViewModel.swift; sourceTree = "<group>"; };
 		1B8A00460000000000000001 /* DataExportView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataExportView.swift; sourceTree = "<group>"; };
+		1B8A00480000000000000001 /* FirstLaunchSecuritySetupView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FirstLaunchSecuritySetupView.swift; sourceTree = "<group>"; };
+		1B8A004A0000000000000001 /* AppLockView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppLockView.swift; sourceTree = "<group>"; };
+		1B8A004C0000000000000001 /* MonthYearFormatter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MonthYearFormatter.swift; sourceTree = "<group>"; };
+		1B8A004E0000000000000001 /* MonthPickerSheet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MonthPickerSheet.swift; sourceTree = "<group>"; };
 		1B8A000E0000000000000001 /* ReportsViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReportsViewModel.swift; sourceTree = "<group>"; };
 		1B8A00100000000000000001 /* CategorySpendingSummary.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategorySpendingSummary.swift; sourceTree = "<group>"; };
 		1B8A00120000000000000001 /* CategoryDonutChartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategoryDonutChartView.swift; sourceTree = "<group>"; };
@@ -171,6 +179,7 @@
 		1A73F1E142271D73982A4B02 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				1B8A00480000000000000001 /* FirstLaunchSecuritySetupView.swift */,
 				1A73F1E142271D73982A4B00 /* OnboardingView.swift */,
 				1B8A001A0000000000000001 /* UserNameSetupView.swift */,
 			);
@@ -267,10 +276,20 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		53A1C0050000000000000001 /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				1B8A004A0000000000000001 /* AppLockView.swift */,
+			);
+			name = Security;
+			path = Security;
+			sourceTree = "<group>";
+		};
 		5515E106C66366346AAA65F4 /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
 				420D57B85ECC87443EAD2EBF /* DashboardView.swift */,
+				1B8A004E0000000000000001 /* MonthPickerSheet.swift */,
 			);
 			name = Dashboard;
 			path = Dashboard;
@@ -325,6 +344,7 @@
 				8C1E25C9AC99036A787E8482 /* DateParsers.swift */,
 				C9D8C8431A7EBBD33DFDD8E6 /* DemoDataSeeder.swift */,
 				1B8A00160000000000000001 /* GreetingProvider.swift */,
+				1B8A004C0000000000000001 /* MonthYearFormatter.swift */,
 				086254077A0F59B1CEFACE9C /* String+Helpers.swift */,
 			);
 			name = Utilities;
@@ -362,6 +382,7 @@
 				1A73F1E142271D73982A4B02 /* Onboarding */,
 				481B4EFC8B934DC84FDE5A3F /* Reports */,
 				CBAA5CC4E8EC07F0A0A8FB4B /* ScanSlip */,
+				53A1C0050000000000000001 /* Security */,
 				4E1A945801F209FE8ED07DBE /* Settings */,
 				DF7C352E68ADE3C84061B13D /* Transactions */,
 			);
@@ -517,9 +538,11 @@
 				9580BCAFF1868544EF35D4F5 /* DateParsers.swift in Sources */,
 				FA8ADAB2FF9DB7AD6F398939 /* DemoDataSeeder.swift in Sources */,
 				1B8A00170000000000000001 /* GreetingProvider.swift in Sources */,
+				1B8A004D0000000000000001 /* MonthYearFormatter.swift in Sources */,
 				BF22070C9B08CB0DB3FBBB38 /* String+Helpers.swift in Sources */,
 				808C6D0017DF2A437D6BFC57 /* ConfirmTransactionView.swift in Sources */,
 				5E872C3A422D4BE3D1BF051B /* DashboardView.swift in Sources */,
+				1B8A004F0000000000000001 /* MonthPickerSheet.swift in Sources */,
 				1B8A00150000000000000001 /* CategoryBreakdownListView.swift in Sources */,
 				1B8A00130000000000000001 /* CategoryDonutChartView.swift in Sources */,
 				1B8A00110000000000000001 /* CategorySpendingSummary.swift in Sources */,
@@ -529,6 +552,7 @@
 				1B8A000F0000000000000001 /* ReportsViewModel.swift in Sources */,
 				1B8A00430000000000000001 /* ShareSheetView.swift in Sources */,
 				1B8A003F0000000000000001 /* SpendingInsightProvider.swift in Sources */,
+				1B8A004B0000000000000001 /* AppLockView.swift in Sources */,
 				1B8A00370000000000000001 /* MultipleSlipScanView.swift in Sources */,
 				1B8A00390000000000000001 /* MultipleSlipScanViewModel.swift in Sources */,
 				C41FA8FDD05C7646631F0529 /* ScanSlipView.swift in Sources */,
@@ -546,6 +570,7 @@
 				1B8A00090000000000000001 /* EditTransactionView.swift in Sources */,
 				16825CE577253F1F0DB52101 /* ManualTransactionFormView.swift in Sources */,
 				1A73F1E142271D73982A4B01 /* OnboardingView.swift in Sources */,
+				1B8A00490000000000000001 /* FirstLaunchSecuritySetupView.swift in Sources */,
 				1B8A001B0000000000000001 /* UserNameSetupView.swift in Sources */,
 				1B8A00070000000000000001 /* TransactionDetailView.swift in Sources */,
 				91065A62396BE4D275A9D201 /* TransactionRowView.swift in Sources */,

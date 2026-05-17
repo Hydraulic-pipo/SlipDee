@@ -4,11 +4,16 @@ struct SettingsView: View {
     @AppStorage(AppSettingsKey.appearanceMode) private var appearanceModeRawValue = AppAppearanceMode.system.rawValue
     @AppStorage(AppSettingsKey.userDisplayName) private var userDisplayName = ""
     @AppStorage(AppSettingsKey.isFaceIDLockEnabled) private var isFaceIDLockEnabled = false
+    @AppStorage(AppSettingsKey.isAppPasscodeEnabled) private var isAppPasscodeEnabled = false
+    @AppStorage(AppSettingsKey.appPasscodeHash) private var appPasscodeHash = ""
     @AppStorage(AppSettingsKey.isEditDeleteProtectionEnabled) private var isEditDeleteProtectionEnabled = true
     @AppStorage(AppSettingsKey.lockTimeout) private var lockTimeoutRawValue = AppLockTimeout.immediate.rawValue
     @AppStorage(AppSettingsKey.isHideAmountsEnabled) private var isHideAmountsEnabled = false
     @AppStorage(AppSettingsKey.isScreenshotProtectionEnabled) private var isScreenshotProtectionEnabled = false
     @AppStorage(AppSettingsKey.isOnDeviceProcessingEnabled) private var isOnDeviceProcessingEnabled = true
+    @AppStorage(AppSettingsKey.hasCompletedNameSetup) private var hasCompletedNameSetup = false
+    @AppStorage(AppSettingsKey.hasCompletedSecuritySetup) private var hasCompletedSecuritySetup = false
+    @AppStorage(AppSettingsKey.hasSeenOnboarding) private var hasSeenOnboarding = false
 
     @State private var helperMessage: String?
 
@@ -36,6 +41,10 @@ struct SettingsView: View {
                                 .foregroundStyle(AppColors.secondaryText)
                         }
                     }
+
+                    #if DEBUG
+                    debugSection
+                    #endif
                 }
                 .padding(.horizontal, AppSpacing.page)
                 .padding(.top, 18)
@@ -116,6 +125,15 @@ struct SettingsView: View {
                 .padding(.vertical, 10)
             }
             .buttonStyle(.plain)
+            divider
+            SettingsRowView(
+                icon: "number.square",
+                title: "App Passcode",
+                subtitle: "Configured during first launch",
+                trailingText: hasAppPasscodeConfigured ? "On" : "Off",
+                showsChevron: false
+            )
+            .padding(.vertical, 10)
             divider
             toggleRow(
                 icon: "eye.slash",
@@ -209,6 +227,25 @@ struct SettingsView: View {
             .padding(.leading, 48)
     }
 
+    #if DEBUG
+    private var debugSection: some View {
+        settingsSection(title: "Developer") {
+            Button {
+                resetAppForNewUser()
+            } label: {
+                SettingsRowView(
+                    icon: "arrow.counterclockwise",
+                    title: "Reset App for New User",
+                    subtitle: "Clears onboarding and security setup",
+                    showsChevron: false
+                )
+                .padding(.vertical, 10)
+            }
+            .buttonStyle(.plain)
+        }
+    }
+    #endif
+
     private func settingsSection<Content: View>(title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(title)
@@ -288,5 +325,21 @@ struct SettingsView: View {
 
     private var trimmedDisplayName: String {
         userDisplayName.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var hasAppPasscodeConfigured: Bool {
+        isAppPasscodeEnabled && !appPasscodeHash.isEmpty
+    }
+
+    private func resetAppForNewUser() {
+        userDisplayName = ""
+        hasCompletedNameSetup = false
+        hasCompletedSecuritySetup = false
+        hasSeenOnboarding = false
+        isAppPasscodeEnabled = false
+        appPasscodeHash = ""
+        isFaceIDLockEnabled = false
+        lockTimeoutRawValue = AppLockTimeout.immediate.rawValue
+        helperMessage = "The app has been reset for first-launch testing."
     }
 }
