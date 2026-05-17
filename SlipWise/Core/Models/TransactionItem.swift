@@ -167,7 +167,11 @@ final class SlipRecord {
     var scanStatusRawValue: String
     var detectedAmount: Double?
     var detectedTransactionDate: Date?
+    var detectedBankName: String
+    var detectedReceiverName: String
+    var detectedReferenceNumber: String
     var detectedMerchantName: String
+    var confidenceScore: Double?
     var scannedAt: Date?
     var createdAt: Date
     var updatedAt: Date
@@ -181,7 +185,11 @@ final class SlipRecord {
         scanStatusRawValue: String = SlipScanStatus.pending.rawValue,
         detectedAmount: Double? = nil,
         detectedTransactionDate: Date? = nil,
+        detectedBankName: String = "",
+        detectedReceiverName: String = "",
+        detectedReferenceNumber: String = "",
         detectedMerchantName: String = "",
+        confidenceScore: Double? = nil,
         scannedAt: Date? = nil,
         createdAt: Date = .now,
         updatedAt: Date = .now
@@ -194,7 +202,11 @@ final class SlipRecord {
         self.scanStatusRawValue = scanStatusRawValue
         self.detectedAmount = detectedAmount
         self.detectedTransactionDate = detectedTransactionDate
+        self.detectedBankName = detectedBankName
+        self.detectedReceiverName = detectedReceiverName
+        self.detectedReferenceNumber = detectedReferenceNumber
         self.detectedMerchantName = detectedMerchantName
+        self.confidenceScore = confidenceScore
         self.scannedAt = scannedAt
         self.createdAt = createdAt
         self.updatedAt = updatedAt

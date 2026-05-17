@@ -5,6 +5,7 @@ struct ScanSlipView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = ScanSlipViewModel()
     @State private var showingScanInfo = false
+    @State private var showingMultipleScan = false
 
     var body: some View {
         AppScreen {
@@ -81,6 +82,11 @@ struct ScanSlipView: View {
         .navigationDestination(for: ParsedSlip.self) { result in
             ConfirmTransactionView(initialResult: result)
         }
+        .sheet(isPresented: $showingMultipleScan) {
+            NavigationStack {
+                MultipleSlipScanView()
+            }
+        }
         .task(id: viewModel.selectedItem) {
             guard viewModel.selectedItem != nil else { return }
             await viewModel.processSelectedItem()
@@ -151,6 +157,11 @@ struct ScanSlipView: View {
 
             Button("Scan New Slip") {
                 showingScanInfo = true
+            }
+            .buttonStyle(SecondaryFintechButtonStyle())
+
+            Button("Scan Today’s Slips") {
+                showingMultipleScan = true
             }
             .buttonStyle(SecondaryFintechButtonStyle())
         }

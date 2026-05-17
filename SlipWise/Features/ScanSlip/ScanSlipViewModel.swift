@@ -11,7 +11,7 @@ final class ScanSlipViewModel: ObservableObject {
     @Published var errorMessage: String?
 
     private let ocrService = OCRService()
-    private let parserService = SlipParserService()
+    private let parserService = BasicSlipParserService()
 
     func processSelectedItem() async {
         guard let selectedItem else { return }
@@ -31,9 +31,16 @@ final class ScanSlipViewModel: ObservableObject {
             selectedImage = image
 
             // First turn the screenshot into lines of text, then convert those lines into a draft transaction.
-            let lines = try await ocrService.recognizeText(from: image)
-            var parsedResult = parserService.parse(textLines: lines)
-            parsedResult.sourceImageName = "selected_slip_\(UUID().uuidString.prefix(8)).jpg"
+            let sourceImageName = "selected_slip_\(UUID().uuidString.prefix(8)).jpg"
+            let ocrResult = try await ocrService.recognizeTextResult(from: image)
+            var parsedResult = parserService.parse(
+                rawText: ocrResult.rawText,
+                recognizedLines: ocrResult.recognizedLines,
+                confidence: ocrResult.confidence,
+                sourceImageName: sourceImageName,
+                originalFileName: selectedItem.itemIdentifier
+            )
+            parsedResult.sourceImageName = sourceImageName
             extractedResult = parsedResult
         } catch {
             errorMessage = error.localizedDescription

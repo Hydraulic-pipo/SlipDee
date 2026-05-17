@@ -17,6 +17,11 @@ struct ConfirmTransactionView: View {
     @State private var paymentMethod: PaymentMethod
 
     private let recognizedLines: [String]
+    private let reviewStatus: ScannedSlipStatus
+    private let duplicateReason: String?
+    private let rawOCRText: String
+    private let ocrConfidence: Double?
+    private let originalFileName: String?
 
     init(initialResult: ParsedSlip) {
         let initialCategory = TransactionCategoryCatalog.definition(for: initialResult.categoryID)
@@ -34,6 +39,11 @@ struct ConfirmTransactionView: View {
         _sourceImageName = State(initialValue: initialResult.sourceImageName)
         _paymentMethod = State(initialValue: initialResult.paymentMethod ?? .other)
         recognizedLines = initialResult.recognizedTextLines
+        reviewStatus = initialResult.reviewStatus
+        duplicateReason = initialResult.duplicateReason
+        rawOCRText = initialResult.rawOCRText
+        ocrConfidence = initialResult.ocrConfidence
+        originalFileName = initialResult.originalFileName
     }
 
     var body: some View {
@@ -41,10 +51,13 @@ struct ConfirmTransactionView: View {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: AppSpacing.section) {
                     confidencePill
+                    if reviewStatus != .new {
+                        reviewBanner
+                    }
                     amountHeader
                     detailCard
 
-                    if !recognizedLines.isEmpty {
+                    if !recognizedLines.isEmpty || !rawOCRText.isEmpty {
                         recognizedTextCard
                     }
 
@@ -64,13 +77,27 @@ struct ConfirmTransactionView: View {
     }
 
     private var confidencePill: some View {
-        Text("OCR Confidence 95%")
+        Text("OCR Confidence \(Int((ocrConfidence ?? 0.95) * 100))%")
             .font(.caption.weight(.semibold))
             .foregroundStyle(AppColors.darkTeal)
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
             .background(AppColors.softMint)
             .clipShape(Capsule())
+    }
+
+    private var reviewBanner: some View {
+        AppCard {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(reviewStatus == .duplicate ? "Possible Duplicate" : "Needs Manual Review")
+                    .font(.headline)
+                    .foregroundStyle(reviewStatus == .duplicate ? AppColors.warning : AppColors.expense)
+
+                Text(duplicateReason ?? "Please review the OCR details carefully before saving.")
+                    .font(.subheadline)
+                    .foregroundStyle(AppColors.secondaryText)
+            }
+        }
     }
 
     private var amountHeader: some View {
@@ -94,6 +121,22 @@ struct ConfirmTransactionView: View {
                     Picker("Category", selection: $selectedCategoryID) {
                         ForEach(availableCategories) { category in
                             Text(category.name).tag(category.id)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .tint(AppColors.primaryText)
+                }
+
+                divider
+
+                detailInputRow(icon: "bahtsign.circle", label: "Amount", text: $amountText, keyboardType: .decimalPad)
+
+                divider
+
+                detailPickerRow(icon: "arrow.left.arrow.right", label: "Type") {
+                    Picker("Type", selection: $transactionType) {
+                        ForEach(TransactionType.allCases) { type in
+                            Text(type.title).tag(type)
                         }
                     }
                     .pickerStyle(.menu)
@@ -179,7 +222,7 @@ struct ConfirmTransactionView: View {
                     .font(.headline)
                     .foregroundStyle(AppColors.primaryText)
 
-                ForEach(recognizedLines, id: \.self) { line in
+                ForEach(recognizedTextLines, id: \.self) { line in
                     Text(line)
                         .font(.caption)
                         .foregroundStyle(AppColors.secondaryText)
@@ -210,7 +253,12 @@ struct ConfirmTransactionView: View {
             .overlay(AppColors.border)
     }
 
-    private func detailInputRow(icon: String, label: String, text: Binding<String>) -> some View {
+    private func detailInputRow(
+        icon: String,
+        label: String,
+        text: Binding<String>,
+        keyboardType: UIKeyboardType = .default
+    ) -> some View {
         HStack(alignment: .top, spacing: 14) {
             Image(systemName: icon)
                 .foregroundStyle(AppColors.primaryTeal)
@@ -222,6 +270,7 @@ struct ConfirmTransactionView: View {
                     .foregroundStyle(AppColors.secondaryText)
 
                 TextField(label, text: text)
+                    .keyboardType(keyboardType)
                     .foregroundStyle(AppColors.primaryText)
             }
 
@@ -250,8 +299,26 @@ struct ConfirmTransactionView: View {
     private func saveTransaction() {
         guard let parsedAmount else { return }
         let selectedCategory = TransactionCategoryCatalog.definition(for: selectedCategoryID)
+        let slipRecord = SlipRecord(
+            originalFileName: originalFileName ?? sourceImageName ?? "",
+            storedImageName: sourceImageName,
+            recognizedText: rawOCRText.isEmpty ? recognizedLines.joined(separator: "\n") : rawOCRText,
+            currencyCode: CurrencyCode.thb,
+            scanStatusRawValue: slipRecordStatus.rawValue,
+            detectedAmount: parsedAmount,
+            detectedTransactionDate: transactionDate,
+            detectedBankName: bankName,
+            detectedReceiverName: receiverName,
+            detectedReferenceNumber: transactionReference,
+            detectedMerchantName: receiverName,
+            confidenceScore: ocrConfidence,
+            scannedAt: .now
+        )
+
+        modelContext.insert(slipRecord)
 
         let transaction = TransactionItem(
+            slipRecordID: slipRecord.id,
             categoryDefinition: selectedCategory,
             amount: parsedAmount,
             type: transactionType,
@@ -263,6 +330,8 @@ struct ConfirmTransactionView: View {
             transactionReference: transactionReference,
             transactionDate: transactionDate,
             note: note,
+            isFromSlip: true,
+            isDuplicateSuspected: reviewStatus == .duplicate,
             sourceImageName: sourceImageName,
             createdAt: .now,
             updatedAt: .now
@@ -275,6 +344,26 @@ struct ConfirmTransactionView: View {
             dismiss()
         } catch {
             print("Failed to save transaction: \(error)")
+        }
+    }
+
+    private var recognizedTextLines: [String] {
+        if !recognizedLines.isEmpty {
+            return recognizedLines
+        }
+
+        return rawOCRText
+            .split(whereSeparator: \.isNewline)
+            .map(String.init)
+            .filter { !$0.isEmpty }
+    }
+
+    private var slipRecordStatus: SlipScanStatus {
+        switch reviewStatus {
+        case .new, .duplicate:
+            return .needsReview
+        case .notRecognized, .failed:
+            return .failed
         }
     }
 }

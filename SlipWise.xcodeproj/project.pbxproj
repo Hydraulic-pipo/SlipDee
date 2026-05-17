@@ -28,6 +28,16 @@
 		1B8A00270000000000000001 /* LockTimeoutSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00260000000000000001 /* LockTimeoutSettingsView.swift */; };
 		1B8A00290000000000000001 /* SupportedBanksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00280000000000000001 /* SupportedBanksView.swift */; };
 		1B8A002B0000000000000001 /* ManageBankLogosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A002A0000000000000001 /* ManageBankLogosView.swift */; };
+		1B8A002D0000000000000001 /* AmountParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A002C0000000000000001 /* AmountParser.swift */; };
+		1B8A002F0000000000000001 /* DateParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A002E0000000000000001 /* DateParser.swift */; };
+		1B8A00310000000000000001 /* SlipCandidateDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00300000000000000001 /* SlipCandidateDetectionService.swift */; };
+		1B8A00330000000000000001 /* BasicSlipParserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00320000000000000001 /* BasicSlipParserService.swift */; };
+		1B8A00350000000000000001 /* DuplicateSlipDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00340000000000000001 /* DuplicateSlipDetectionService.swift */; };
+		1B8A00370000000000000001 /* MultipleSlipScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00360000000000000001 /* MultipleSlipScanView.swift */; };
+		1B8A00390000000000000001 /* MultipleSlipScanViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00380000000000000001 /* MultipleSlipScanViewModel.swift */; };
+		1B8A003B0000000000000001 /* SlipScanResultRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A003A0000000000000001 /* SlipScanResultRowView.swift */; };
+		1B8A003D0000000000000001 /* SlipScanReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A003C0000000000000001 /* SlipScanReviewView.swift */; };
+		1B8A003F0000000000000001 /* SpendingInsightProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A003E0000000000000001 /* SpendingInsightProvider.swift */; };
 		1B8A000F0000000000000001 /* ReportsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A000E0000000000000001 /* ReportsViewModel.swift */; };
 		1B8A00110000000000000001 /* CategorySpendingSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00100000000000000001 /* CategorySpendingSummary.swift */; };
 		1B8A00130000000000000001 /* CategoryDonutChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00120000000000000001 /* CategoryDonutChartView.swift */; };
@@ -81,6 +91,16 @@
 		1B8A00260000000000000001 /* LockTimeoutSettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LockTimeoutSettingsView.swift; sourceTree = "<group>"; };
 		1B8A00280000000000000001 /* SupportedBanksView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SupportedBanksView.swift; sourceTree = "<group>"; };
 		1B8A002A0000000000000001 /* ManageBankLogosView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ManageBankLogosView.swift; sourceTree = "<group>"; };
+		1B8A002C0000000000000001 /* AmountParser.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AmountParser.swift; sourceTree = "<group>"; };
+		1B8A002E0000000000000001 /* DateParser.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DateParser.swift; sourceTree = "<group>"; };
+		1B8A00300000000000000001 /* SlipCandidateDetectionService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SlipCandidateDetectionService.swift; sourceTree = "<group>"; };
+		1B8A00320000000000000001 /* BasicSlipParserService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BasicSlipParserService.swift; sourceTree = "<group>"; };
+		1B8A00340000000000000001 /* DuplicateSlipDetectionService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DuplicateSlipDetectionService.swift; sourceTree = "<group>"; };
+		1B8A00360000000000000001 /* MultipleSlipScanView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MultipleSlipScanView.swift; sourceTree = "<group>"; };
+		1B8A00380000000000000001 /* MultipleSlipScanViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MultipleSlipScanViewModel.swift; sourceTree = "<group>"; };
+		1B8A003A0000000000000001 /* SlipScanResultRowView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SlipScanResultRowView.swift; sourceTree = "<group>"; };
+		1B8A003C0000000000000001 /* SlipScanReviewView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SlipScanReviewView.swift; sourceTree = "<group>"; };
+		1B8A003E0000000000000001 /* SpendingInsightProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SpendingInsightProvider.swift; sourceTree = "<group>"; };
 		1B8A000E0000000000000001 /* ReportsViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReportsViewModel.swift; sourceTree = "<group>"; };
 		1B8A00100000000000000001 /* CategorySpendingSummary.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategorySpendingSummary.swift; sourceTree = "<group>"; };
 		1B8A00120000000000000001 /* CategoryDonutChartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategoryDonutChartView.swift; sourceTree = "<group>"; };
@@ -175,7 +195,10 @@
 				1B8A00000000000000000001 /* AppAuthenticationService.swift */,
 				1B8A00220000000000000001 /* AppLockManager.swift */,
 				1B8A00020000000000000001 /* AppPasscodeService.swift */,
+				1B8A00320000000000000001 /* BasicSlipParserService.swift */,
+				1B8A00340000000000000001 /* DuplicateSlipDetectionService.swift */,
 				D43D0852A6C6B05C84BECC63 /* OCRService.swift */,
+				1B8A00300000000000000001 /* SlipCandidateDetectionService.swift */,
 				E382CC0B39307629A2DB7BBA /* SlipParserSamples.swift */,
 				EE60D0433181FFF3EB09A0A4 /* SlipParserService.swift */,
 			);
@@ -190,6 +213,7 @@
 				1B8A00120000000000000001 /* CategoryDonutChartView.swift */,
 				1B8A00100000000000000001 /* CategorySpendingSummary.swift */,
 				1B8A000E0000000000000001 /* ReportsViewModel.swift */,
+				1B8A003E0000000000000001 /* SpendingInsightProvider.swift */,
 				3F788FA5EA88B9A606B5EED9 /* ReportsView.swift */,
 			);
 			name = Reports;
@@ -283,7 +307,9 @@
 			isa = PBXGroup;
 			children = (
 				1B8A00200000000000000001 /* AmountDisplayFormatter.swift */,
+				1B8A002C0000000000000001 /* AmountParser.swift */,
 				06CD4C5D7D270A6E9B249819 /* CurrencyFormatter.swift */,
+				1B8A002E0000000000000001 /* DateParser.swift */,
 				8C1E25C9AC99036A787E8482 /* DateParsers.swift */,
 				C9D8C8431A7EBBD33DFDD8E6 /* DemoDataSeeder.swift */,
 				1B8A00160000000000000001 /* GreetingProvider.swift */,
@@ -334,7 +360,11 @@
 		CBAA5CC4E8EC07F0A0A8FB4B /* ScanSlip */ = {
 			isa = PBXGroup;
 			children = (
+				1B8A00360000000000000001 /* MultipleSlipScanView.swift */,
+				1B8A00380000000000000001 /* MultipleSlipScanViewModel.swift */,
 				9D4F4E1C5F349064B24B0B33 /* ScanSlipView.swift */,
+				1B8A003A0000000000000001 /* SlipScanResultRowView.swift */,
+				1B8A003C0000000000000001 /* SlipScanReviewView.swift */,
 				BE0F87B0B8BE0DA0A32A1208 /* ScanSlipViewModel.swift */,
 			);
 			name = ScanSlip;
@@ -459,13 +489,18 @@
 				1B8A00010000000000000001 /* AppAuthenticationService.swift in Sources */,
 				1B8A00230000000000000001 /* AppLockManager.swift in Sources */,
 				1B8A00030000000000000001 /* AppPasscodeService.swift in Sources */,
+				1B8A00330000000000000001 /* BasicSlipParserService.swift in Sources */,
+				1B8A00350000000000000001 /* DuplicateSlipDetectionService.swift in Sources */,
 				97C86A63C9D6399899ADF413 /* OCRService.swift in Sources */,
+				1B8A00310000000000000001 /* SlipCandidateDetectionService.swift in Sources */,
 				EC1F8D89DFBCCB10A903445F /* SlipParserSamples.swift in Sources */,
 				7DDCD86B4AFFBDBDDDAE5303 /* SlipParserService.swift in Sources */,
 				1B8A001F0000000000000001 /* AppSettingsStore.swift in Sources */,
 				1B8A00250000000000000001 /* PrivacyOverlayView.swift in Sources */,
 				1B8A00210000000000000001 /* AmountDisplayFormatter.swift in Sources */,
+				1B8A002D0000000000000001 /* AmountParser.swift in Sources */,
 				7C4D7495E4BEF38412C147D4 /* CurrencyFormatter.swift in Sources */,
+				1B8A002F0000000000000001 /* DateParser.swift in Sources */,
 				9580BCAFF1868544EF35D4F5 /* DateParsers.swift in Sources */,
 				FA8ADAB2FF9DB7AD6F398939 /* DemoDataSeeder.swift in Sources */,
 				1B8A00170000000000000001 /* GreetingProvider.swift in Sources */,
@@ -477,7 +512,12 @@
 				1B8A00110000000000000001 /* CategorySpendingSummary.swift in Sources */,
 				B7F3C1AE682B3A3BB494EAB4 /* ReportsView.swift in Sources */,
 				1B8A000F0000000000000001 /* ReportsViewModel.swift in Sources */,
+				1B8A003F0000000000000001 /* SpendingInsightProvider.swift in Sources */,
+				1B8A00370000000000000001 /* MultipleSlipScanView.swift in Sources */,
+				1B8A00390000000000000001 /* MultipleSlipScanViewModel.swift in Sources */,
 				C41FA8FDD05C7646631F0529 /* ScanSlipView.swift in Sources */,
+				1B8A003B0000000000000001 /* SlipScanResultRowView.swift in Sources */,
+				1B8A003D0000000000000001 /* SlipScanReviewView.swift in Sources */,
 				25AE240C84432F7A287F68C9 /* ScanSlipViewModel.swift in Sources */,
 				1B8A00190000000000000001 /* AppearanceSettingsView.swift in Sources */,
 				1B8A001D0000000000000001 /* EditDisplayNameView.swift in Sources */,

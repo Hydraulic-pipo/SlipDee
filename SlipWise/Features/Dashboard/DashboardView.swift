@@ -6,6 +6,8 @@ struct DashboardView: View {
     @AppStorage(AppSettingsKey.isHideAmountsEnabled) private var isHideAmountsEnabled = false
     @State private var showingManualTransactionForm = false
     @State private var showingSlipImport = false
+    @State private var showingMultipleSlipScan = false
+    @State private var showingScanOptions = false
     @State private var greetingText = GreetingProvider.greeting(displayName: nil)
 
     @Query(sort: \TransactionItem.transactionDate, order: .reverse)
@@ -68,6 +70,22 @@ struct DashboardView: View {
             NavigationStack {
                 ScanSlipView()
             }
+        }
+        .sheet(isPresented: $showingMultipleSlipScan) {
+            NavigationStack {
+                MultipleSlipScanView()
+            }
+        }
+        .confirmationDialog("Scan Slips", isPresented: $showingScanOptions, titleVisibility: .visible) {
+            Button("Scan One Slip") {
+                showingSlipImport = true
+            }
+
+            Button("Scan Today’s Slips") {
+                showingMultipleSlipScan = true
+            }
+
+            Button("Cancel", role: .cancel) {}
         }
     }
 
@@ -154,10 +172,10 @@ struct DashboardView: View {
         HStack(spacing: 14) {
             actionCard(
                 title: "Scan Slip",
-                subtitle: "Import bank slip",
+                subtitle: "One or many slips",
                 icon: "doc.viewfinder"
             ) {
-                showingSlipImport = true
+                showingScanOptions = true
             }
             .frame(maxWidth: .infinity)
 

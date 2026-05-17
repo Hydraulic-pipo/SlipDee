@@ -40,6 +40,14 @@ struct ReportsView: View {
         ReportsViewModel.categorySummary(from: expenseTransactions, categories: categories)
     }
 
+    private var spendingInsightText: String {
+        SpendingInsightProvider.insight(
+            currentMonthExpense: totalSpent,
+            previousMonthExpense: comparisonSpent,
+            topCategoryName: categorySummary.items.first?.categoryName
+        )
+    }
+
     private var chartPoints: [ReportTrendPoint] {
         ReportsViewModel.trendPoints(from: expenseTransactions, range: selectedRange)
     }
@@ -152,17 +160,13 @@ struct ReportsView: View {
     private var insightCard: some View {
         AppCard {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Insight")
+                Text("Spending Insight")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(AppColors.darkTeal)
 
-                Text("คุณใช้จ่ายน้อยลง 8% จากเดือนที่แล้ว")
+                Text(spendingInsightText)
                     .font(.headline)
                     .foregroundStyle(AppColors.primaryText)
-
-                Text("ดีมาก! รักษาไว้เลยครับ 😊")
-                    .font(.subheadline)
-                    .foregroundStyle(AppColors.secondaryText)
             }
             .padding(4)
             .frame(maxWidth: .infinity, alignment: .leading)

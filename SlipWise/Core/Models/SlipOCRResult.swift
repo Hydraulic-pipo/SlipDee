@@ -18,6 +18,11 @@ struct ParsedSlip: Identifiable, Hashable {
     var transferType: String?
     var note: String
     var recognizedTextLines: [String]
+    var rawOCRText: String
+    var ocrConfidence: Double?
+    var reviewStatus: ScannedSlipStatus
+    var duplicateReason: String?
+    var originalFileName: String?
     var sourceImageName: String?
     var status: SlipScanStatus
 
@@ -39,6 +44,11 @@ struct ParsedSlip: Identifiable, Hashable {
         transferType: String? = nil,
         note: String = "",
         recognizedTextLines: [String] = [],
+        rawOCRText: String = "",
+        ocrConfidence: Double? = nil,
+        reviewStatus: ScannedSlipStatus = .new,
+        duplicateReason: String? = nil,
+        originalFileName: String? = nil,
         sourceImageName: String? = nil,
         status: SlipScanStatus = .pending
     ) {
@@ -59,8 +69,66 @@ struct ParsedSlip: Identifiable, Hashable {
         self.transferType = transferType
         self.note = note
         self.recognizedTextLines = recognizedTextLines
+        self.rawOCRText = rawOCRText
+        self.ocrConfidence = ocrConfidence
+        self.reviewStatus = reviewStatus
+        self.duplicateReason = duplicateReason
+        self.originalFileName = originalFileName
         self.sourceImageName = sourceImageName
         self.status = status
+    }
+}
+
+enum ScannedSlipStatus: String, Codable, CaseIterable, Identifiable, Hashable {
+    case new
+    case duplicate
+    case notRecognized
+    case failed
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .new:
+            return "New"
+        case .duplicate:
+            return "Duplicate"
+        case .notRecognized:
+            return "Not recognized"
+        case .failed:
+            return "Failed"
+        }
+    }
+}
+
+struct ScannedSlipResult: Identifiable {
+    let id: UUID
+    let imageData: Data?
+    let rawOCRText: String
+    let isLikelySlip: Bool
+    let status: ScannedSlipStatus
+    let duplicateReason: String?
+    let parsedSlip: ParsedSlip
+    let createdAt: Date
+
+    init(
+        id: UUID = UUID(),
+        imageData: Data?,
+        rawOCRText: String,
+        isLikelySlip: Bool,
+        status: ScannedSlipStatus,
+        duplicateReason: String? = nil,
+        parsedSlip: ParsedSlip,
+        createdAt: Date = .now
+    ) {
+        self.id = id
+        self.imageData = imageData
+        self.rawOCRText = rawOCRText
+        self.isLikelySlip = isLikelySlip
+        self.status = status
+        self.duplicateReason = duplicateReason
+        self.parsedSlip = parsedSlip
+        self.createdAt = createdAt
     }
 }
 
