@@ -37,6 +37,7 @@ struct TransactionDetailView: View {
     @State private var showingEditSheet = false
     @State private var showingDeleteConfirmation = false
     @State private var showingPasscodePrompt = false
+    @State private var isAuthenticatingForEdit = false
     @State private var authenticationErrorMessage: String?
     @State private var pendingAction: SensitiveTransactionAction?
 
@@ -153,6 +154,8 @@ struct TransactionDetailView: View {
                 }
             }
             .buttonStyle(PrimaryFintechButtonStyle())
+            .disabled(isAuthenticatingForEdit)
+            .opacity(isAuthenticatingForEdit ? 0.72 : 1)
 
             Button("Delete Transaction") {
                 Task {
@@ -210,11 +213,21 @@ struct TransactionDetailView: View {
     }
 
     private func handleSensitiveAction(_ action: SensitiveTransactionAction) async {
-        authenticationErrorMessage = nil
-        pendingAction = action
+        await MainActor.run {
+            authenticationErrorMessage = nil
+            pendingAction = action
+            if action == .edit {
+                isAuthenticatingForEdit = true
+            }
+        }
 
         guard isEditDeleteProtectionEnabled else {
-            continueAuthenticatedAction()
+            await MainActor.run {
+                if action == .edit {
+                    isAuthenticatingForEdit = false
+                }
+                continueAuthenticatedAction()
+            }
             return
         }
 
@@ -227,13 +240,19 @@ struct TransactionDetailView: View {
             passcodeAvailable: passcodeAvailable
         )
 
-        switch result {
-        case .success:
-            continueAuthenticatedAction()
-        case .requiresPasscode:
-            showingPasscodePrompt = true
-        case .failure:
-            authenticationErrorMessage = "Authentication failed. Please try again."
+        await MainActor.run {
+            if action == .edit {
+                isAuthenticatingForEdit = false
+            }
+
+            switch result {
+            case .success:
+                continueAuthenticatedAction()
+            case .requiresPasscode:
+                showingPasscodePrompt = true
+            case .failure:
+                authenticationErrorMessage = "Authentication failed. Please try again."
+            }
         }
     }
 

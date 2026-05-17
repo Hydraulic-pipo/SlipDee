@@ -8,6 +8,8 @@ enum AppAuthenticationResult: Equatable {
 }
 
 final class AppAuthenticationService {
+    @MainActor static var isSystemAuthenticationInProgress = false
+
     func canAuthenticateWithBiometrics() -> Bool {
         let context = LAContext()
         var error: NSError?
@@ -20,6 +22,15 @@ final class AppAuthenticationService {
 
         guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
             return false
+        }
+
+        await MainActor.run {
+            Self.isSystemAuthenticationInProgress = true
+        }
+        defer {
+            Task { @MainActor in
+                Self.isSystemAuthenticationInProgress = false
+            }
         }
 
         do {
@@ -46,6 +57,15 @@ final class AppAuthenticationService {
             return passcodeAvailable ? .requiresPasscode : .failure
         }
 
+        await MainActor.run {
+            Self.isSystemAuthenticationInProgress = true
+        }
+        defer {
+            Task { @MainActor in
+                Self.isSystemAuthenticationInProgress = false
+            }
+        }
+
         do {
             let success = try await context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason)
             return success ? .success : (passcodeAvailable ? .requiresPasscode : .failure)
@@ -61,6 +81,15 @@ final class AppAuthenticationService {
 
         guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
             return false
+        }
+
+        await MainActor.run {
+            Self.isSystemAuthenticationInProgress = true
+        }
+        defer {
+            Task { @MainActor in
+                Self.isSystemAuthenticationInProgress = false
+            }
         }
 
         do {

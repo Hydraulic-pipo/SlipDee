@@ -35,6 +35,10 @@ final class AppLockManager: ObservableObject {
     }
 
     func handleScenePhaseChanged(_ phase: ScenePhase) async {
+        if await MainActor.run(body: { AppAuthenticationService.isSystemAuthenticationInProgress }) {
+            return
+        }
+
         switch phase {
         case .background:
             if isProtectionEnabled {
@@ -98,6 +102,7 @@ final class AppLockManager: ObservableObject {
 
     private var shouldLockNow: Bool {
         guard !isAuthenticating else { return false }
+        guard !AppAuthenticationService.isSystemAuthenticationInProgress else { return false }
 
         if !hasAuthenticatedThisSession {
             return true
