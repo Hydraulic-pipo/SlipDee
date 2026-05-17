@@ -10,6 +10,7 @@ final class AppLockManager: ObservableObject {
     private let settingsStore: AppSettingsStore
     private var hasAuthenticatedThisSession = false
     private var lastBackgroundDate: Date?
+    private var hasPreparedForLaunch = false
 
     init(
         authenticationService: AppAuthenticationService = AppAuthenticationService(),
@@ -21,6 +22,9 @@ final class AppLockManager: ObservableObject {
     }
 
     func prepareForLaunch() {
+        guard !hasPreparedForLaunch else { return }
+        hasPreparedForLaunch = true
+
         guard isProtectionEnabled else {
             isLocked = false
             hasAuthenticatedThisSession = false
@@ -35,6 +39,7 @@ final class AppLockManager: ObservableObject {
         case .background:
             if isProtectionEnabled {
                 lastBackgroundDate = .now
+                hasPreparedForLaunch = true
             }
         case .active:
             await authenticateIfNeeded()
@@ -76,6 +81,7 @@ final class AppLockManager: ObservableObject {
             isLocked = false
             errorMessage = nil
             hasAuthenticatedThisSession = false
+            lastBackgroundDate = nil
             return
         }
 
@@ -97,16 +103,16 @@ final class AppLockManager: ObservableObject {
             return true
         }
 
+        guard let lastBackgroundDate else {
+            return false
+        }
+
         guard let timeout = settingsStore.lockTimeout.timeInterval else {
             return false
         }
 
         if timeout == 0 {
             return true
-        }
-
-        guard let lastBackgroundDate else {
-            return false
         }
 
         return Date().timeIntervalSince(lastBackgroundDate) >= timeout
@@ -127,6 +133,7 @@ final class AppLockManager: ObservableObject {
         if success {
             isLocked = false
             hasAuthenticatedThisSession = true
+            lastBackgroundDate = nil
             errorMessage = nil
         } else {
             isLocked = true
