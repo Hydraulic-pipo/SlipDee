@@ -46,6 +46,8 @@
 		1B8A004B0000000000000001 /* AppLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A004A0000000000000001 /* AppLockView.swift */; };
 		1B8A004D0000000000000001 /* MonthYearFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A004C0000000000000001 /* MonthYearFormatter.swift */; };
 		1B8A004F0000000000000001 /* MonthPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A004E0000000000000001 /* MonthPickerSheet.swift */; };
+		1B8A00510000000000000001 /* NotificationReminderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00500000000000000001 /* NotificationReminderService.swift */; };
+		1B8A00530000000000000001 /* ReminderSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00520000000000000001 /* ReminderSettingsView.swift */; };
 		1B8A000F0000000000000001 /* ReportsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A000E0000000000000001 /* ReportsViewModel.swift */; };
 		1B8A00110000000000000001 /* CategorySpendingSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00100000000000000001 /* CategorySpendingSummary.swift */; };
 		1B8A00130000000000000001 /* CategoryDonutChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00120000000000000001 /* CategoryDonutChartView.swift */; };
@@ -117,6 +119,8 @@
 		1B8A004A0000000000000001 /* AppLockView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppLockView.swift; sourceTree = "<group>"; };
 		1B8A004C0000000000000001 /* MonthYearFormatter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MonthYearFormatter.swift; sourceTree = "<group>"; };
 		1B8A004E0000000000000001 /* MonthPickerSheet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MonthPickerSheet.swift; sourceTree = "<group>"; };
+		1B8A00500000000000000001 /* NotificationReminderService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationReminderService.swift; sourceTree = "<group>"; };
+		1B8A00520000000000000001 /* ReminderSettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReminderSettingsView.swift; sourceTree = "<group>"; };
 		1B8A000E0000000000000001 /* ReportsViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReportsViewModel.swift; sourceTree = "<group>"; };
 		1B8A00100000000000000001 /* CategorySpendingSummary.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategorySpendingSummary.swift; sourceTree = "<group>"; };
 		1B8A00120000000000000001 /* CategoryDonutChartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategoryDonutChartView.swift; sourceTree = "<group>"; };
@@ -215,6 +219,7 @@
 				1B8A00320000000000000001 /* BasicSlipParserService.swift */,
 				1B8A00400000000000000001 /* CSVExportService.swift */,
 				1B8A00340000000000000001 /* DuplicateSlipDetectionService.swift */,
+				1B8A00500000000000000001 /* NotificationReminderService.swift */,
 				D43D0852A6C6B05C84BECC63 /* OCRService.swift */,
 				1B8A00300000000000000001 /* SlipCandidateDetectionService.swift */,
 				E382CC0B39307629A2DB7BBA /* SlipParserSamples.swift */,
@@ -249,6 +254,7 @@
 				1B8A00260000000000000001 /* LockTimeoutSettingsView.swift */,
 				1B8A002A0000000000000001 /* ManageBankLogosView.swift */,
 				51C37FAB029974441AC84C18 /* PrivacySettingsView.swift */,
+				1B8A00520000000000000001 /* ReminderSettingsView.swift */,
 				1B8A000C0000000000000001 /* SettingsView.swift */,
 				1B8A00280000000000000001 /* SupportedBanksView.swift */,
 			);
@@ -524,6 +530,7 @@
 				1B8A00030000000000000001 /* AppPasscodeService.swift in Sources */,
 				1B8A00330000000000000001 /* BasicSlipParserService.swift in Sources */,
 				1B8A00350000000000000001 /* DuplicateSlipDetectionService.swift in Sources */,
+				1B8A00510000000000000001 /* NotificationReminderService.swift in Sources */,
 				97C86A63C9D6399899ADF413 /* OCRService.swift in Sources */,
 				1B8A00310000000000000001 /* SlipCandidateDetectionService.swift in Sources */,
 				EC1F8D89DFBCCB10A903445F /* SlipParserSamples.swift in Sources */,
@@ -565,6 +572,7 @@
 				1B8A00270000000000000001 /* LockTimeoutSettingsView.swift in Sources */,
 				1B8A002B0000000000000001 /* ManageBankLogosView.swift in Sources */,
 				AC3656C7632B54E56E1A5B8E /* PrivacySettingsView.swift in Sources */,
+				1B8A00530000000000000001 /* ReminderSettingsView.swift in Sources */,
 				1B8A000D0000000000000001 /* SettingsView.swift in Sources */,
 				1B8A00290000000000000001 /* SupportedBanksView.swift in Sources */,
 				1B8A00090000000000000001 /* EditTransactionView.swift in Sources */,

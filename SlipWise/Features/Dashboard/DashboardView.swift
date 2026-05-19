@@ -7,7 +7,6 @@ struct DashboardView: View {
     @State private var showingManualTransactionForm = false
     @State private var showingSlipImport = false
     @State private var showingMultipleSlipScan = false
-    @State private var showingScanOptions = false
     @State private var showingMonthPicker = false
     @State private var greetingText = GreetingProvider.greeting(displayName: nil)
     @State private var selectedMonth: Int
@@ -80,7 +79,9 @@ struct DashboardView: View {
         }
         .sheet(isPresented: $showingSlipImport) {
             NavigationStack {
-                ScanSlipView()
+                ScanSlipView(onSaveComplete: {
+                    showingSlipImport = false
+                })
             }
         }
         .sheet(isPresented: $showingMultipleSlipScan) {
@@ -93,17 +94,6 @@ struct DashboardView: View {
                 selectedMonth: $selectedMonth,
                 selectedYear: $selectedYear
             )
-        }
-        .confirmationDialog("Scan Slips", isPresented: $showingScanOptions, titleVisibility: .visible) {
-            Button("Scan One Slip") {
-                showingSlipImport = true
-            }
-
-            Button("Scan Today’s Slips") {
-                showingMultipleSlipScan = true
-            }
-
-            Button("Cancel", role: .cancel) {}
         }
     }
 
@@ -192,26 +182,48 @@ struct DashboardView: View {
     }
 
     private var actionButtons: some View {
-        HStack(spacing: 14) {
-            actionCard(
-                title: "Scan Slip",
-                subtitle: "One or many slips",
-                icon: "doc.viewfinder"
-            ) {
-                showingScanOptions = true
+        VStack(spacing: 12) {
+            HStack(spacing: 14) {
+                actionCard(
+                    title: "Scan Slip",
+                    subtitle: "Import one slip",
+                    icon: "doc.viewfinder"
+                ) {
+                    showingSlipImport = true
+                }
+                .frame(maxWidth: .infinity)
+
+                actionCard(
+                    title: "Add Manually",
+                    subtitle: "Income or expense",
+                    icon: "square.and.pencil"
+                ) {
+                    showingManualTransactionForm = true
+                }
+                .frame(maxWidth: .infinity)
             }
             .frame(maxWidth: .infinity)
 
-            actionCard(
-                title: "Add Manually",
-                subtitle: "Income or expense",
-                icon: "square.and.pencil"
-            ) {
-                showingManualTransactionForm = true
+            Button {
+                showingMultipleSlipScan = true
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "photo.on.rectangle.angled")
+                    Text("Scan Today’s Slips")
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(AppColors.primaryTeal)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
+                .background(AppColors.cardBackground)
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppCornerRadius.small, style: .continuous)
+                        .stroke(AppColors.border, lineWidth: 1)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.small, style: .continuous))
             }
-            .frame(maxWidth: .infinity)
+            .buttonStyle(.plain)
         }
-        .frame(maxWidth: .infinity)
     }
 
     private var recentSection: some View {

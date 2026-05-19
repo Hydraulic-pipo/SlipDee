@@ -1,10 +1,13 @@
 import SwiftData
 import SwiftUI
+import UIKit
 
 struct ConfirmTransactionView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
 
+    @State private var showingOCRText = false
+    @State private var saveErrorMessage: String?
     @State private var amountText: String
     @State private var transactionType: TransactionType
     @State private var selectedCategoryID: UUID
@@ -22,8 +25,14 @@ struct ConfirmTransactionView: View {
     private let rawOCRText: String
     private let ocrConfidence: Double?
     private let originalFileName: String?
+    private let previewImage: UIImage?
+    private let onSaveComplete: (() -> Void)?
 
-    init(initialResult: ParsedSlip) {
+    init(
+        initialResult: ParsedSlip,
+        previewImage: UIImage? = nil,
+        onSaveComplete: (() -> Void)? = nil
+    ) {
         let initialCategory = TransactionCategoryCatalog.definition(for: initialResult.categoryID)
             ?? TransactionCategoryCatalog.definition(named: initialResult.categoryName)
             ?? TransactionCategoryCatalog.definition(named: "Other")
@@ -44,20 +53,43 @@ struct ConfirmTransactionView: View {
         rawOCRText = initialResult.rawOCRText
         ocrConfidence = initialResult.ocrConfidence
         originalFileName = initialResult.originalFileName
+        self.previewImage = previewImage
+        self.onSaveComplete = onSaveComplete
     }
 
     var body: some View {
         AppScreen {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: AppSpacing.section) {
+                    if let previewImage {
+                        previewCard(image: previewImage)
+                    }
+
                     confidencePill
+
                     if reviewStatus != .new {
                         reviewBanner
                     }
+
                     amountHeader
                     detailCard
 
+                    if let saveErrorMessage {
+                        AppCard {
+                            Text(saveErrorMessage)
+                                .font(.subheadline)
+                                .foregroundStyle(AppColors.expense)
+                        }
+                    }
+
                     if !recognizedLines.isEmpty || !rawOCRText.isEmpty {
+                        Button(showingOCRText ? "Hide OCR Text" : "View OCR Text") {
+                            showingOCRText.toggle()
+                        }
+                        .buttonStyle(SecondaryFintechButtonStyle())
+                    }
+
+                    if (!recognizedLines.isEmpty || !rawOCRText.isEmpty) && showingOCRText {
                         recognizedTextCard
                     }
 
@@ -66,14 +98,29 @@ struct ConfirmTransactionView: View {
                     }
                     .buttonStyle(PrimaryFintechButtonStyle())
                     .disabled(parsedAmount == nil)
+
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                    .buttonStyle(SecondaryFintechButtonStyle())
                 }
                 .padding(.horizontal, AppSpacing.page)
                 .padding(.top, 18)
                 .padding(.bottom, 32)
             }
         }
-        .navigationTitle("Confirm Transaction")
+        .navigationTitle("Review Transaction")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func previewCard(image: UIImage) -> some View {
+        AppCard {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: .infinity, maxHeight: 220)
+                .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.small, style: .continuous))
+        }
     }
 
     private var confidencePill: some View {
@@ -128,9 +175,7 @@ struct ConfirmTransactionView: View {
                 }
 
                 divider
-
                 detailInputRow(icon: "bahtsign.circle", label: "Amount", text: $amountText, keyboardType: .decimalPad)
-
                 divider
 
                 detailPickerRow(icon: "arrow.left.arrow.right", label: "Type") {
@@ -144,21 +189,13 @@ struct ConfirmTransactionView: View {
                 }
 
                 divider
-
                 detailInputRow(icon: "building.columns", label: "Bank", text: $bankName)
-
                 divider
-
                 detailInputRow(icon: "person", label: "Receiver", text: $receiverName)
-
                 divider
-
                 detailDateRow
-
                 divider
-
                 detailInputRow(icon: "number", label: "Reference No.", text: $transactionReference)
-
                 divider
 
                 detailPickerRow(icon: "creditcard", label: "Payment Method") {
@@ -175,7 +212,7 @@ struct ConfirmTransactionView: View {
 
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
-                        Label("Note Optional", systemImage: "note.text")
+                        Label("Note", systemImage: "note.text")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(AppColors.primaryText)
                         Spacer()
@@ -218,7 +255,7 @@ struct ConfirmTransactionView: View {
     private var recognizedTextCard: some View {
         AppCard {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Recognized Text")
+                Text("OCR Text")
                     .font(.headline)
                     .foregroundStyle(AppColors.primaryText)
 
@@ -244,7 +281,6 @@ struct ConfirmTransactionView: View {
         let filtered = TransactionCategoryCatalog.defaultDefinitions.filter { definition in
             definition.transactionType == nil || definition.transactionType == transactionType
         }
-
         return filtered.isEmpty ? TransactionCategoryCatalog.defaultDefinitions : filtered
     }
 
@@ -298,6 +334,8 @@ struct ConfirmTransactionView: View {
 
     private func saveTransaction() {
         guard let parsedAmount else { return }
+        saveErrorMessage = nil
+
         let selectedCategory = TransactionCategoryCatalog.definition(for: selectedCategoryID)
         let slipRecord = SlipRecord(
             originalFileName: originalFileName ?? sourceImageName ?? "",
@@ -341,9 +379,13 @@ struct ConfirmTransactionView: View {
 
         do {
             try modelContext.save()
-            dismiss()
+            if let onSaveComplete {
+                onSaveComplete()
+            } else {
+                dismiss()
+            }
         } catch {
-            print("Failed to save transaction: \(error)")
+            saveErrorMessage = "Unable to save transaction. Please try again."
         }
     }
 
@@ -360,7 +402,9 @@ struct ConfirmTransactionView: View {
 
     private var slipRecordStatus: SlipScanStatus {
         switch reviewStatus {
-        case .new, .duplicate:
+        case .new:
+            return .parsed
+        case .duplicate:
             return .needsReview
         case .notRecognized, .failed:
             return .failed

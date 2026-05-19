@@ -4,16 +4,23 @@ import SwiftUI
 struct ScanSlipView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = ScanSlipViewModel()
-    @State private var showingScanInfo = false
-    @State private var showingMultipleScan = false
+    @State private var showingManualFallback = false
+
+    let onSaveComplete: (() -> Void)?
+
+    init(onSaveComplete: (() -> Void)? = nil) {
+        self.onSaveComplete = onSaveComplete
+    }
 
     var body: some View {
         AppScreen {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: AppSpacing.section) {
-                    AppSectionHeader("Upload or scan your bank slip", subtitle: "Processed on your device for a private and simple flow.")
+                    Text("Choose a bank slip image to record your transaction.")
+                        .font(.subheadline)
+                        .foregroundStyle(AppColors.secondaryText)
 
-                    slipPreviewCard
+                    uploadCard
                     importActions
 
                     if viewModel.isProcessing {
@@ -25,30 +32,10 @@ struct ScanSlipView: View {
 
                     if let errorMessage = viewModel.errorMessage {
                         statusCard(
-                            title: "We need a clearer slip",
-                            message: errorMessage,
+                            title: "We could not read this slip automatically.",
+                            message: "\(errorMessage) You can still enter the details manually.",
                             accent: AppColors.expense
                         )
-                    }
-
-                    if let result = viewModel.extractedResult {
-                        AppCard {
-                            VStack(alignment: .leading, spacing: 14) {
-                                Text("Draft Preview")
-                                    .font(.headline)
-                                    .foregroundStyle(AppColors.primaryText)
-
-                                ScanPreviewRow(title: "Amount", value: result.amount.map(CurrencyFormatter.bahtString(from:)) ?? "Not found")
-                                ScanPreviewRow(title: "Bank", value: result.bankName ?? "Not found")
-                                ScanPreviewRow(title: "Receiver", value: result.receiverName ?? "Not found")
-                                ScanPreviewRow(title: "Reference", value: result.transactionReference ?? "Not found")
-                            }
-                        }
-
-                        NavigationLink(value: result) {
-                            Text("Review Transaction")
-                        }
-                        .buttonStyle(PrimaryFintechButtonStyle())
                     }
 
                     privacyCard
@@ -60,85 +47,58 @@ struct ScanSlipView: View {
         }
         .navigationTitle("Import Slip")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
+        .navigationDestination(item: $viewModel.extractedResult) { result in
+            ConfirmTransactionView(
+                initialResult: result,
+                previewImage: viewModel.selectedImage,
+                onSaveComplete: {
+                    onSaveComplete?()
                     dismiss()
-                } label: {
-                    Image(systemName: "chevron.left")
-                        .foregroundStyle(AppColors.primaryText)
                 }
-            }
-
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showingScanInfo = true
-                } label: {
-                    Image(systemName: "info.circle")
-                        .foregroundStyle(AppColors.primaryText)
-                }
-            }
+            )
         }
-        .navigationDestination(for: ParsedSlip.self) { result in
-            ConfirmTransactionView(initialResult: result)
-        }
-        .sheet(isPresented: $showingMultipleScan) {
-            NavigationStack {
-                MultipleSlipScanView()
-            }
+        .sheet(isPresented: $showingManualFallback) {
+            ManualTransactionFormView()
         }
         .task(id: viewModel.selectedItem) {
             guard viewModel.selectedItem != nil else { return }
             await viewModel.processSelectedItem()
         }
-        .alert("Scan New Slip", isPresented: $showingScanInfo) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text("Camera scanning can be added next. For now, you can import slip screenshots from Photos.")
+        .onAppear {
+            viewModel.reset()
         }
     }
 
-    private var slipPreviewCard: some View {
+    private var uploadCard: some View {
         AppCard {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("Slip Preview")
-                    .font(.headline)
-                    .foregroundStyle(AppColors.primaryText)
+            ZStack {
+                RoundedRectangle(cornerRadius: AppCornerRadius.medium, style: .continuous)
+                    .fill(AppColors.elevatedCardBackground)
+                    .frame(height: 320)
 
-                ZStack {
-                    RoundedRectangle(cornerRadius: AppCornerRadius.medium, style: .continuous)
-                        .fill(AppColors.elevatedCardBackground)
-                        .frame(height: 280)
+                if let selectedImage = viewModel.selectedImage {
+                    Image(uiImage: selectedImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: .infinity, maxHeight: 292)
+                        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        .padding(14)
+                } else {
+                    VStack(spacing: 16) {
+                        Image(systemName: "doc.text.image")
+                            .font(.system(size: 46, weight: .regular))
+                            .foregroundStyle(AppColors.primaryTeal)
 
-                    RoundedRectangle(cornerRadius: AppCornerRadius.medium, style: .continuous)
-                        .stroke(style: StrokeStyle(lineWidth: 1, dash: [6, 6]))
-                        .foregroundStyle(AppColors.border)
-                        .frame(height: 280)
+                        Text("Select a bank slip image")
+                            .font(.headline)
+                            .foregroundStyle(AppColors.primaryText)
 
-                    if let selectedImage = viewModel.selectedImage {
-                        Image(uiImage: selectedImage)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(maxWidth: .infinity, maxHeight: 260)
-                            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                            .padding(12)
-                    } else {
-                        VStack(spacing: 16) {
-                            Image(systemName: "doc.text.image")
-                                .font(.system(size: 42, weight: .regular))
-                                .foregroundStyle(AppColors.primaryTeal)
-
-                            Text("Import your Thai bank slip")
-                                .font(.headline)
-                                .foregroundStyle(AppColors.primaryText)
-
-                            Text("Slip preview will appear here before anything is saved.")
-                                .font(.subheadline)
-                                .foregroundStyle(AppColors.secondaryText)
-                                .multilineTextAlignment(.center)
-                        }
-                        .padding(.horizontal, 24)
+                        Text("SlipDee will read your slip and help fill transaction details.")
+                            .font(.subheadline)
+                            .foregroundStyle(AppColors.secondaryText)
+                            .multilineTextAlignment(.center)
                     }
+                    .padding(.horizontal, 24)
                 }
             }
         }
@@ -155,15 +115,19 @@ struct ScanSlipView: View {
             }
             .buttonStyle(PrimaryFintechButtonStyle())
 
-            Button("Scan New Slip") {
-                showingScanInfo = true
+            if viewModel.errorMessage != nil {
+                Button("Enter Manually Instead") {
+                    showingManualFallback = true
+                }
+                .buttonStyle(SecondaryFintechButtonStyle())
             }
-            .buttonStyle(SecondaryFintechButtonStyle())
 
-            Button("Scan Today’s Slips") {
-                showingMultipleScan = true
+            if viewModel.selectedImage != nil && !viewModel.isProcessing {
+                Button("Choose Another Image") {
+                    viewModel.reset()
+                }
+                .buttonStyle(SecondaryFintechButtonStyle())
             }
-            .buttonStyle(SecondaryFintechButtonStyle())
         }
     }
 
@@ -177,10 +141,10 @@ struct ScanSlipView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Processed on your device")
+                    Text("SlipDee only scans the photo you choose.")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(AppColors.primaryText)
-                    Text("Your data stays private and secure.")
+                    Text("Processing stays on this device.")
                         .font(.caption)
                         .foregroundStyle(AppColors.secondaryText)
                 }
@@ -191,8 +155,13 @@ struct ScanSlipView: View {
     private func statusCard(title: String, message: String, accent: Color = AppColors.primaryTeal) -> some View {
         AppCard {
             HStack(spacing: 14) {
-                ProgressView()
-                    .tint(accent)
+                if viewModel.isProcessing {
+                    ProgressView()
+                        .tint(accent)
+                } else {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(accent)
+                }
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
@@ -204,26 +173,6 @@ struct ScanSlipView: View {
                         .foregroundStyle(AppColors.secondaryText)
                 }
             }
-        }
-    }
-}
-
-private struct ScanPreviewRow: View {
-    let title: String
-    let value: String
-
-    var body: some View {
-        HStack(alignment: .top) {
-            Text(title)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(AppColors.secondaryText)
-
-            Spacer(minLength: 12)
-
-            Text(value)
-                .font(.subheadline)
-                .foregroundStyle(AppColors.primaryText)
-                .multilineTextAlignment(.trailing)
         }
     }
 }

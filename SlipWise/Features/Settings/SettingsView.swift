@@ -7,6 +7,9 @@ struct SettingsView: View {
     @AppStorage(AppSettingsKey.isAppPasscodeEnabled) private var isAppPasscodeEnabled = false
     @AppStorage(AppSettingsKey.appPasscodeHash) private var appPasscodeHash = ""
     @AppStorage(AppSettingsKey.isEditDeleteProtectionEnabled) private var isEditDeleteProtectionEnabled = true
+    @AppStorage(AppSettingsKey.isDailyReminderEnabled) private var isDailyReminderEnabled = false
+    @AppStorage(AppSettingsKey.dailyReminderHour) private var dailyReminderHour = 20
+    @AppStorage(AppSettingsKey.dailyReminderMinute) private var dailyReminderMinute = 0
     @AppStorage(AppSettingsKey.lockTimeout) private var lockTimeoutRawValue = AppLockTimeout.immediate.rawValue
     @AppStorage(AppSettingsKey.isHideAmountsEnabled) private var isHideAmountsEnabled = false
     @AppStorage(AppSettingsKey.isScreenshotProtectionEnabled) private var isScreenshotProtectionEnabled = false
@@ -29,6 +32,7 @@ struct SettingsView: View {
 
                     profileSection
                     appearanceSection
+                    reminderSection
                     privacySection
                     bankSourcesSection
                     dataSection
@@ -156,6 +160,23 @@ struct SettingsView: View {
                 isOn: $isOnDeviceProcessingEnabled,
                 isDisabled: true
             )
+        }
+    }
+
+    private var reminderSection: some View {
+        settingsSection(title: "Reminders") {
+            NavigationLink {
+                ReminderSettingsView()
+            } label: {
+                SettingsRowView(
+                    icon: "bell.badge",
+                    title: "Daily Update Reminder",
+                    subtitle: "Set a daily reminder to update your transactions",
+                    trailingText: isDailyReminderEnabled ? reminderTimeText : "Off"
+                )
+                .padding(.vertical, 10)
+            }
+            .buttonStyle(.plain)
         }
     }
 
@@ -339,7 +360,25 @@ struct SettingsView: View {
         isAppPasscodeEnabled = false
         appPasscodeHash = ""
         isFaceIDLockEnabled = false
+        isDailyReminderEnabled = false
+        dailyReminderHour = 20
+        dailyReminderMinute = 0
         lockTimeoutRawValue = AppLockTimeout.immediate.rawValue
         helperMessage = "The app has been reset for first-launch testing."
+    }
+
+    private var reminderTimeText: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
+        formatter.timeStyle = .short
+        formatter.dateStyle = .none
+        return formatter.string(
+            from: Calendar.current.date(
+                bySettingHour: dailyReminderHour,
+                minute: dailyReminderMinute,
+                second: 0,
+                of: Date()
+            ) ?? Date()
+        )
     }
 }

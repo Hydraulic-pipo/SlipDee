@@ -5,6 +5,9 @@ enum AppSettingsKey {
     static let isFaceIDLockEnabled = "isFaceIDLockEnabled"
     static let isEditDeleteProtectionEnabled = "isEditDeleteProtectionEnabled"
     static let isBiometricEditDeleteEnabled = "isBiometricEditDeleteEnabled"
+    static let isDailyReminderEnabled = "isDailyReminderEnabled"
+    static let dailyReminderHour = "dailyReminderHour"
+    static let dailyReminderMinute = "dailyReminderMinute"
     static let isAppPasscodeEnabled = "isAppPasscodeEnabled"
     static let appPasscodeHash = "appPasscodeHash"
     static let lockTimeout = "lockTimeout"
@@ -59,6 +62,31 @@ final class AppSettingsStore: ObservableObject {
             return defaults.bool(forKey: AppSettingsKey.isBiometricEditDeleteEnabled)
         }
         set { defaults.set(newValue, forKey: AppSettingsKey.isBiometricEditDeleteEnabled) }
+    }
+
+    var isDailyReminderEnabled: Bool {
+        get { defaults.bool(forKey: AppSettingsKey.isDailyReminderEnabled) }
+        set { defaults.set(newValue, forKey: AppSettingsKey.isDailyReminderEnabled) }
+    }
+
+    var dailyReminderHour: Int {
+        get {
+            if defaults.object(forKey: AppSettingsKey.dailyReminderHour) == nil {
+                return 20
+            }
+            return defaults.integer(forKey: AppSettingsKey.dailyReminderHour)
+        }
+        set { defaults.set(newValue, forKey: AppSettingsKey.dailyReminderHour) }
+    }
+
+    var dailyReminderMinute: Int {
+        get {
+            if defaults.object(forKey: AppSettingsKey.dailyReminderMinute) == nil {
+                return 0
+            }
+            return defaults.integer(forKey: AppSettingsKey.dailyReminderMinute)
+        }
+        set { defaults.set(newValue, forKey: AppSettingsKey.dailyReminderMinute) }
     }
 
     var isAppPasscodeEnabled: Bool {

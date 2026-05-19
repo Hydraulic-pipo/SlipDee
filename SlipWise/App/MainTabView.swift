@@ -12,6 +12,7 @@ struct MainTabView: View {
     @State private var showingAddActions = false
     @State private var showingManualEntry = false
     @State private var showingSlipImport = false
+    @State private var showingMultipleSlipScan = false
 
     init() {
         let appearance = UITabBarAppearance()
@@ -71,12 +72,16 @@ struct MainTabView: View {
             addButton
         }
         .confirmationDialog("Add Transaction", isPresented: $showingAddActions, titleVisibility: .visible) {
-            Button("Scan Slip") {
+            Button("Import Slip") {
                 showingSlipImport = true
             }
 
             Button("Add Manually") {
                 showingManualEntry = true
+            }
+
+            Button("Scan Today’s Slips") {
+                showingMultipleSlipScan = true
             }
 
             Button("Cancel", role: .cancel) {}
@@ -86,7 +91,17 @@ struct MainTabView: View {
         }
         .sheet(isPresented: $showingSlipImport) {
             NavigationStack {
-                ScanSlipView()
+                ScanSlipView(
+                    onSaveComplete: {
+                        selectedTab = .home
+                        showingSlipImport = false
+                    }
+                )
+            }
+        }
+        .sheet(isPresented: $showingMultipleSlipScan) {
+            NavigationStack {
+                MultipleSlipScanView()
             }
         }
     }
