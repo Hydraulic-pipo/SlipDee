@@ -4,16 +4,31 @@ import SwiftUI
 struct DashboardView: View {
     @AppStorage(AppSettingsKey.userDisplayName) private var userDisplayName = ""
     @AppStorage(AppSettingsKey.isHideAmountsEnabled) private var isHideAmountsEnabled = false
+
+    @Environment(\.modelContext) private var modelContext
+
     @State private var showingManualTransactionForm = false
     @State private var showingSlipImport = false
     @State private var showingMultipleSlipScan = false
     @State private var showingMonthPicker = false
     @State private var greetingText = GreetingProvider.greeting(displayName: nil)
+    @State private var statusMessage: String?
+    @State private var recurringIncomeToSkip: RecurringIncome?
+    @State private var duplicateRecurringIncomeToConfirm: RecurringIncome?
     @State private var selectedMonth: Int
     @State private var selectedYear: Int
 
     @Query(sort: \TransactionItem.transactionDate, order: .reverse)
     private var transactions: [TransactionItem]
+
+    @Query(sort: \TransactionCategory.sortOrder)
+    private var categories: [TransactionCategory]
+
+    @Query(sort: \RecurringIncome.createdAt, order: .forward)
+    private var recurringIncomes: [RecurringIncome]
+
+    @Query(sort: \RecurringIncomeOccurrence.createdAt, order: .forward)
+    private var recurringIncomeOccurrences: [RecurringIncomeOccurrence]
 
     init() {
         let now = Date()
@@ -53,12 +68,33 @@ struct DashboardView: View {
         MonthYearFormatter.displayName(month: selectedMonth, year: selectedYear)
     }
 
+    private var pendingRecurringIncomes: [RecurringIncome] {
+        recurringIncomes
+            .filter { $0.isActive }
+            .filter { occurrence(for: $0)?.status != .confirmed && occurrence(for: $0)?.status != .skipped }
+            .sorted { lhs, rhs in
+                if lhs.payDay == rhs.payDay {
+                    return lhs.createdAt < rhs.createdAt
+                }
+                return lhs.payDay < rhs.payDay
+            }
+    }
+
     var body: some View {
         AppScreen {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: AppSpacing.section) {
                     headerSection
                     balanceCard
+
+                    if let statusMessage {
+                        statusCard(message: statusMessage)
+                    }
+
+                    if !pendingRecurringIncomes.isEmpty {
+                        expectedIncomeSection
+                    }
+
                     actionButtons
                     recentSection
                 }
@@ -94,6 +130,26 @@ struct DashboardView: View {
                 selectedMonth: $selectedMonth,
                 selectedYear: $selectedYear
             )
+        }
+        .alert("Skip this income?", isPresented: skipAlertBinding, presenting: recurringIncomeToSkip) { recurringIncome in
+            Button("Cancel", role: .cancel) {
+                recurringIncomeToSkip = nil
+            }
+            Button("Skip", role: .destructive) {
+                skipRecurringIncome(recurringIncome)
+            }
+        } message: { _ in
+            Text("This will hide it for this month without creating a transaction.")
+        }
+        .alert("This income may already be recorded.", isPresented: duplicateAlertBinding, presenting: duplicateRecurringIncomeToConfirm) { recurringIncome in
+            Button("Cancel", role: .cancel) {
+                duplicateRecurringIncomeToConfirm = nil
+            }
+            Button("Confirm Anyway") {
+                confirmRecurringIncome(recurringIncome)
+            }
+        } message: { recurringIncome in
+            Text("SlipDee found a similar income for \(recurringIncome.name) in this month. Do you want to confirm it again?")
         }
     }
 
@@ -181,6 +237,24 @@ struct DashboardView: View {
         .shadow(color: AppColors.primaryTeal.opacity(0.18), radius: 18, x: 0, y: 10)
     }
 
+    private var expectedIncomeSection: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.card) {
+            AppSectionHeader("Expected Income", subtitle: "Confirm regular income for \(monthTitle)")
+
+            ForEach(Array(pendingRecurringIncomes.prefix(2))) { recurringIncome in
+                expectedIncomeCard(for: recurringIncome)
+            }
+
+            if pendingRecurringIncomes.count > 2 {
+                AppCard {
+                    Text("View all expected income in Recurring Income settings.")
+                        .font(.subheadline)
+                        .foregroundStyle(AppColors.secondaryText)
+                }
+            }
+        }
+    }
+
     private var actionButtons: some View {
         VStack(spacing: 12) {
             HStack(spacing: 14) {
@@ -244,6 +318,78 @@ struct DashboardView: View {
         }
     }
 
+    private func statusCard(message: String) -> some View {
+        AppCard {
+            Text(message)
+                .font(.subheadline)
+                .foregroundStyle(AppColors.secondaryText)
+        }
+    }
+
+    private func expectedIncomeCard(for recurringIncome: RecurringIncome) -> some View {
+        AppCard {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(recurringIncome.name)
+                            .font(.headline)
+                            .foregroundStyle(AppColors.primaryText)
+
+                        Text(
+                            RecurringIncomeDateHelper.expectedDateTitle(
+                                payDay: recurringIncome.payDay,
+                                month: selectedMonth,
+                                year: selectedYear
+                            )
+                        )
+                        .font(.caption)
+                        .foregroundStyle(AppColors.secondaryText)
+                    }
+
+                    Spacer()
+
+                    Text(AmountDisplayFormatter.display(amount: recurringIncome.amount, isHidden: isHideAmountsEnabled))
+                        .font(.title3.bold())
+                        .foregroundStyle(AppColors.primaryTeal)
+                }
+
+                HStack(spacing: 12) {
+                    Button("Confirm") {
+                        handleConfirmTap(for: recurringIncome)
+                    }
+                    .buttonStyle(PrimaryFintechButtonStyle())
+
+                    Button("Skip") {
+                        recurringIncomeToSkip = recurringIncome
+                    }
+                    .buttonStyle(SecondaryFintechButtonStyle())
+                }
+            }
+        }
+    }
+
+    private var skipAlertBinding: Binding<Bool> {
+        Binding(
+            get: { recurringIncomeToSkip != nil },
+            set: { isPresented in
+                if !isPresented {
+                    recurringIncomeToSkip = nil
+                }
+            }
+        )
+    }
+
+    private var duplicateAlertBinding: Binding<Bool> {
+        Binding(
+            get: { duplicateRecurringIncomeToConfirm != nil },
+            set: { isPresented in
+                if !isPresented {
+                    duplicateRecurringIncomeToConfirm = nil
+                }
+            }
+        )
+    }
+
     private func actionCard(title: String, subtitle: String, icon: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             AppCard {
@@ -275,5 +421,155 @@ struct DashboardView: View {
 
     private func refreshGreeting() {
         greetingText = GreetingProvider.greeting(displayName: userDisplayName)
+    }
+
+    private func occurrence(for recurringIncome: RecurringIncome) -> RecurringIncomeOccurrence? {
+        recurringIncomeOccurrences.first {
+            $0.recurringIncomeID == recurringIncome.id &&
+            $0.month == selectedMonth &&
+            $0.year == selectedYear
+        }
+    }
+
+    private func handleConfirmTap(for recurringIncome: RecurringIncome) {
+        if hasPossibleDuplicate(for: recurringIncome) {
+            duplicateRecurringIncomeToConfirm = recurringIncome
+        } else {
+            confirmRecurringIncome(recurringIncome)
+        }
+    }
+
+    private func hasPossibleDuplicate(for recurringIncome: RecurringIncome) -> Bool {
+        selectedMonthTransactions.contains { transaction in
+            guard transaction.type == .income else { return false }
+            guard abs(transaction.amount - recurringIncome.amount) < 0.01 else { return false }
+
+            let recurringName = recurringIncome.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            let receiverName = transaction.receiverName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            let merchantName = transaction.merchantName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+
+            if recurringName.isEmpty {
+                return true
+            }
+
+            return recurringName == receiverName || recurringName == merchantName
+        }
+    }
+
+    private func confirmRecurringIncome(_ recurringIncome: RecurringIncome) {
+        duplicateRecurringIncomeToConfirm = nil
+
+        let categoryDefinition = resolvedCategoryDefinition(for: recurringIncome.categoryID)
+        let now = Date()
+        let trimmedName = recurringIncome.name.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let transaction = TransactionItem(
+            categoryDefinition: categoryDefinition,
+            amount: recurringIncome.amount,
+            currencyCode: recurringIncome.currencyCode,
+            type: .income,
+            paymentMethod: recurringIncome.paymentMethod,
+            merchantName: "",
+            bankName: "",
+            receiverName: trimmedName.isEmpty ? "Salary" : trimmedName,
+            senderName: "",
+            transactionReference: "",
+            transactionDate: transactionDateForConfirmation(recurringIncome),
+            note: recurringIncome.note ?? "",
+            isFromSlip: false,
+            isDuplicateSuspected: false,
+            sourceImageName: nil,
+            createdAt: now,
+            updatedAt: now
+        )
+
+        modelContext.insert(transaction)
+
+        let occurrence = occurrence(for: recurringIncome)
+            ?? RecurringIncomeOccurrence(
+                recurringIncomeID: recurringIncome.id,
+                month: selectedMonth,
+                year: selectedYear,
+                status: .confirmed
+            )
+
+        occurrence.status = .confirmed
+        occurrence.transactionID = transaction.id
+        occurrence.updatedAt = now
+
+        if occurrence.modelContext == nil {
+            modelContext.insert(occurrence)
+        }
+
+        do {
+            try modelContext.save()
+            statusMessage = "Income confirmed"
+        } catch {
+            statusMessage = "We couldn't confirm this income. Please try again."
+        }
+    }
+
+    private func skipRecurringIncome(_ recurringIncome: RecurringIncome) {
+        recurringIncomeToSkip = nil
+
+        let now = Date()
+        let occurrence = occurrence(for: recurringIncome)
+            ?? RecurringIncomeOccurrence(
+                recurringIncomeID: recurringIncome.id,
+                month: selectedMonth,
+                year: selectedYear,
+                status: .skipped
+            )
+
+        occurrence.status = .skipped
+        occurrence.transactionID = nil
+        occurrence.updatedAt = now
+
+        if occurrence.modelContext == nil {
+            modelContext.insert(occurrence)
+        }
+
+        do {
+            try modelContext.save()
+            statusMessage = "Expected income skipped for this month."
+        } catch {
+            statusMessage = "We couldn't skip this income. Please try again."
+        }
+    }
+
+    private func resolvedCategoryDefinition(for categoryID: UUID?) -> TransactionCategoryDefinition? {
+        if let builtIn = TransactionCategoryCatalog.definition(for: categoryID) {
+            return builtIn
+        }
+
+        guard let categoryID,
+              let category = categories.first(where: { $0.id == categoryID })
+        else {
+            return nil
+        }
+
+        return TransactionCategoryDefinition(
+            id: category.id,
+            name: category.name,
+            iconSystemName: category.iconSystemName,
+            colorHex: category.colorHex,
+            transactionType: category.transactionType,
+            sortOrder: category.sortOrder
+        )
+    }
+
+    private func transactionDateForConfirmation(_ recurringIncome: RecurringIncome) -> Date {
+        let currentComponents = Calendar.current.dateComponents([.month, .year], from: Date())
+        let isCurrentMonth = currentComponents.month == selectedMonth && currentComponents.year == selectedYear
+
+        if isCurrentMonth {
+            return Date()
+        }
+
+        return RecurringIncomeDateHelper.expectedDate(
+            payDay: recurringIncome.payDay,
+            month: selectedMonth,
+            year: selectedYear
+        ) ?? Date()
     }
 }

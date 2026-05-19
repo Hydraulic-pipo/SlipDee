@@ -17,6 +17,8 @@ struct SlipWiseApp: App {
         let schema = Schema([
             TransactionItem.self,
             TransactionCategory.self,
+            RecurringIncome.self,
+            RecurringIncomeOccurrence.self,
             SlipRecord.self,
             Budget.self,
             MerchantRule.self,

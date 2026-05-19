@@ -48,6 +48,11 @@
 		1B8A004F0000000000000001 /* MonthPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A004E0000000000000001 /* MonthPickerSheet.swift */; };
 		1B8A00510000000000000001 /* NotificationReminderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00500000000000000001 /* NotificationReminderService.swift */; };
 		1B8A00530000000000000001 /* ReminderSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00520000000000000001 /* ReminderSettingsView.swift */; };
+		1B8A00550000000000000001 /* RecurringIncome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00540000000000000001 /* RecurringIncome.swift */; };
+		1B8A00570000000000000001 /* RecurringIncomeOccurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00560000000000000001 /* RecurringIncomeOccurrence.swift */; };
+		1B8A00590000000000000001 /* RecurringIncomeDateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00580000000000000001 /* RecurringIncomeDateHelper.swift */; };
+		1B8A005B0000000000000001 /* RecurringIncomeFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A005A0000000000000001 /* RecurringIncomeFormView.swift */; };
+		1B8A005D0000000000000001 /* RecurringIncomeListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A005C0000000000000001 /* RecurringIncomeListView.swift */; };
 		1B8A000F0000000000000001 /* ReportsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A000E0000000000000001 /* ReportsViewModel.swift */; };
 		1B8A00110000000000000001 /* CategorySpendingSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00100000000000000001 /* CategorySpendingSummary.swift */; };
 		1B8A00130000000000000001 /* CategoryDonutChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00120000000000000001 /* CategoryDonutChartView.swift */; };
@@ -121,6 +126,11 @@
 		1B8A004E0000000000000001 /* MonthPickerSheet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MonthPickerSheet.swift; sourceTree = "<group>"; };
 		1B8A00500000000000000001 /* NotificationReminderService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationReminderService.swift; sourceTree = "<group>"; };
 		1B8A00520000000000000001 /* ReminderSettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReminderSettingsView.swift; sourceTree = "<group>"; };
+		1B8A00540000000000000001 /* RecurringIncome.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecurringIncome.swift; sourceTree = "<group>"; };
+		1B8A00560000000000000001 /* RecurringIncomeOccurrence.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecurringIncomeOccurrence.swift; sourceTree = "<group>"; };
+		1B8A00580000000000000001 /* RecurringIncomeDateHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecurringIncomeDateHelper.swift; sourceTree = "<group>"; };
+		1B8A005A0000000000000001 /* RecurringIncomeFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecurringIncomeFormView.swift; sourceTree = "<group>"; };
+		1B8A005C0000000000000001 /* RecurringIncomeListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecurringIncomeListView.swift; sourceTree = "<group>"; };
 		1B8A000E0000000000000001 /* ReportsViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReportsViewModel.swift; sourceTree = "<group>"; };
 		1B8A00100000000000000001 /* CategorySpendingSummary.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategorySpendingSummary.swift; sourceTree = "<group>"; };
 		1B8A00120000000000000001 /* CategoryDonutChartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategoryDonutChartView.swift; sourceTree = "<group>"; };
@@ -243,6 +253,16 @@
 			path = Reports;
 			sourceTree = "<group>";
 		};
+		1B8A005E0000000000000001 /* Income */ = {
+			isa = PBXGroup;
+			children = (
+				1B8A005A0000000000000001 /* RecurringIncomeFormView.swift */,
+				1B8A005C0000000000000001 /* RecurringIncomeListView.swift */,
+			);
+			name = Income;
+			path = Income;
+			sourceTree = "<group>";
+		};
 		4E1A945801F209FE8ED07DBE /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -304,6 +324,8 @@
 		574F3D38E2CC8A389124E9A4 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				1B8A00540000000000000001 /* RecurringIncome.swift */,
+				1B8A00560000000000000001 /* RecurringIncomeOccurrence.swift */,
 				1504E9F6352A4E20D6A59542 /* SlipOCRResult.swift */,
 				C71F479597DEC6A8688C8B33 /* SpendingCategory.swift */,
 				7AAE61ABB1910CA1EBB251CA /* TransactionItem.swift */,
@@ -351,6 +373,7 @@
 				C9D8C8431A7EBBD33DFDD8E6 /* DemoDataSeeder.swift */,
 				1B8A00160000000000000001 /* GreetingProvider.swift */,
 				1B8A004C0000000000000001 /* MonthYearFormatter.swift */,
+				1B8A00580000000000000001 /* RecurringIncomeDateHelper.swift */,
 				086254077A0F59B1CEFACE9C /* String+Helpers.swift */,
 			);
 			name = Utilities;
@@ -385,6 +408,7 @@
 			children = (
 				14F7BF9558D42EE563487849 /* ConfirmTransaction */,
 				5515E106C66366346AAA65F4 /* Dashboard */,
+				1B8A005E0000000000000001 /* Income */,
 				1A73F1E142271D73982A4B02 /* Onboarding */,
 				481B4EFC8B934DC84FDE5A3F /* Reports */,
 				CBAA5CC4E8EC07F0A0A8FB4B /* ScanSlip */,
@@ -524,6 +548,8 @@
 				327B8621A04AC4922BD565AB /* SpendingCategory.swift in Sources */,
 				0FFBB2773229F7409E2DEC60 /* TransactionItem.swift in Sources */,
 				2C72E8FF63FB2584898C1493 /* TransactionType.swift in Sources */,
+				1B8A00550000000000000001 /* RecurringIncome.swift in Sources */,
+				1B8A00570000000000000001 /* RecurringIncomeOccurrence.swift in Sources */,
 				1B8A00050000000000000001 /* PasscodePromptView.swift in Sources */,
 				1B8A00010000000000000001 /* AppAuthenticationService.swift in Sources */,
 				1B8A00230000000000000001 /* AppLockManager.swift in Sources */,
@@ -546,6 +572,7 @@
 				FA8ADAB2FF9DB7AD6F398939 /* DemoDataSeeder.swift in Sources */,
 				1B8A00170000000000000001 /* GreetingProvider.swift in Sources */,
 				1B8A004D0000000000000001 /* MonthYearFormatter.swift in Sources */,
+				1B8A00590000000000000001 /* RecurringIncomeDateHelper.swift in Sources */,
 				BF22070C9B08CB0DB3FBBB38 /* String+Helpers.swift in Sources */,
 				808C6D0017DF2A437D6BFC57 /* ConfirmTransactionView.swift in Sources */,
 				5E872C3A422D4BE3D1BF051B /* DashboardView.swift in Sources */,
@@ -575,6 +602,8 @@
 				1B8A00530000000000000001 /* ReminderSettingsView.swift in Sources */,
 				1B8A000D0000000000000001 /* SettingsView.swift in Sources */,
 				1B8A00290000000000000001 /* SupportedBanksView.swift in Sources */,
+				1B8A005B0000000000000001 /* RecurringIncomeFormView.swift in Sources */,
+				1B8A005D0000000000000001 /* RecurringIncomeListView.swift in Sources */,
 				1B8A00090000000000000001 /* EditTransactionView.swift in Sources */,
 				16825CE577253F1F0DB52101 /* ManualTransactionFormView.swift in Sources */,
 				1A73F1E142271D73982A4B01 /* OnboardingView.swift in Sources */,

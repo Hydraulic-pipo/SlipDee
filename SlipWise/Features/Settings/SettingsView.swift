@@ -76,6 +76,18 @@ struct SettingsView: View {
                 .padding(.vertical, 10)
             }
             .buttonStyle(.plain)
+            divider
+            NavigationLink {
+                RecurringIncomeListView()
+            } label: {
+                SettingsRowView(
+                    icon: "calendar.badge.plus",
+                    title: "Recurring Income",
+                    subtitle: "Salary and regular income"
+                )
+                .padding(.vertical, 10)
+            }
+            .buttonStyle(.plain)
         }
     }
 
