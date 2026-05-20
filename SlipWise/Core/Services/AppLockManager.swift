@@ -129,18 +129,29 @@ final class AppLockManager: ObservableObject {
         isAuthenticating = true
         errorMessage = nil
 
-        let success = await authenticationService.authenticateForAppLock(
-            reason: "Unlock SlipDee."
+        let result = await authenticationService.authenticateForAppLock(
+            reason: "Unlock SlipDee.",
+            passcodeAvailable: requiresPasscode
         )
 
         isAuthenticating = false
 
-        if success {
+        switch result {
+        case .success:
             isLocked = false
             hasAuthenticatedThisSession = true
             lastBackgroundDate = nil
             errorMessage = nil
-        } else {
+        case .requiresPasscode:
+            isLocked = true
+            errorMessage = requiresPasscode ? nil : "Enter your passcode to continue."
+        case .cancelled:
+            isLocked = true
+            errorMessage = nil
+        case .unavailable:
+            isLocked = true
+            errorMessage = requiresPasscode ? "Face ID or Touch ID isn't available right now. Use your passcode to unlock." : "Face ID or Touch ID isn't available right now."
+        case .failure:
             isLocked = true
             errorMessage = "Authentication failed. Please try again."
         }

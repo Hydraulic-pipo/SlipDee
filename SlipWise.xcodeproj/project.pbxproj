@@ -18,6 +18,11 @@
 		1B8A00090000000000000001 /* EditTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00080000000000000001 /* EditTransactionView.swift */; };
 		1B8A000B0000000000000001 /* EditDeleteSecurityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A000A0000000000000001 /* EditDeleteSecurityView.swift */; };
 		1B8A000D0000000000000001 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A000C0000000000000001 /* SettingsView.swift */; };
+		1B8A000F0000000000000001 /* ReportsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A000E0000000000000001 /* ReportsViewModel.swift */; };
+		1B8A00110000000000000001 /* CategorySpendingSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00100000000000000001 /* CategorySpendingSummary.swift */; };
+		1B8A00130000000000000001 /* CategoryDonutChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00120000000000000001 /* CategoryDonutChartView.swift */; };
+		1B8A00150000000000000001 /* CategoryBreakdownListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00140000000000000001 /* CategoryBreakdownListView.swift */; };
+		1B8A00170000000000000001 /* GreetingProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00160000000000000001 /* GreetingProvider.swift */; };
 		1B8A00190000000000000001 /* AppearanceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00180000000000000001 /* AppearanceSettingsView.swift */; };
 		1B8A001B0000000000000001 /* UserNameSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A001A0000000000000001 /* UserNameSetupView.swift */; };
 		1B8A001D0000000000000001 /* EditDisplayNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A001C0000000000000001 /* EditDisplayNameView.swift */; };
@@ -53,11 +58,6 @@
 		1B8A00590000000000000001 /* RecurringIncomeDateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00580000000000000001 /* RecurringIncomeDateHelper.swift */; };
 		1B8A005B0000000000000001 /* RecurringIncomeFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A005A0000000000000001 /* RecurringIncomeFormView.swift */; };
 		1B8A005D0000000000000001 /* RecurringIncomeListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A005C0000000000000001 /* RecurringIncomeListView.swift */; };
-		1B8A000F0000000000000001 /* ReportsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A000E0000000000000001 /* ReportsViewModel.swift */; };
-		1B8A00110000000000000001 /* CategorySpendingSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00100000000000000001 /* CategorySpendingSummary.swift */; };
-		1B8A00130000000000000001 /* CategoryDonutChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00120000000000000001 /* CategoryDonutChartView.swift */; };
-		1B8A00150000000000000001 /* CategoryBreakdownListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00140000000000000001 /* CategoryBreakdownListView.swift */; };
-		1B8A00170000000000000001 /* GreetingProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8A00160000000000000001 /* GreetingProvider.swift */; };
 		25AE240C84432F7A287F68C9 /* ScanSlipViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0F87B0B8BE0DA0A32A1208 /* ScanSlipViewModel.swift */; };
 		2C72E8FF63FB2584898C1493 /* TransactionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DD4ED0745E08A76AB356F0 /* TransactionType.swift */; };
 		327B8621A04AC4922BD565AB /* SpendingCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71F479597DEC6A8688C8B33 /* SpendingCategory.swift */; };
@@ -96,6 +96,11 @@
 		1B8A00080000000000000001 /* EditTransactionView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EditTransactionView.swift; sourceTree = "<group>"; };
 		1B8A000A0000000000000001 /* EditDeleteSecurityView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EditDeleteSecurityView.swift; sourceTree = "<group>"; };
 		1B8A000C0000000000000001 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		1B8A000E0000000000000001 /* ReportsViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReportsViewModel.swift; sourceTree = "<group>"; };
+		1B8A00100000000000000001 /* CategorySpendingSummary.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategorySpendingSummary.swift; sourceTree = "<group>"; };
+		1B8A00120000000000000001 /* CategoryDonutChartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategoryDonutChartView.swift; sourceTree = "<group>"; };
+		1B8A00140000000000000001 /* CategoryBreakdownListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategoryBreakdownListView.swift; sourceTree = "<group>"; };
+		1B8A00160000000000000001 /* GreetingProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GreetingProvider.swift; sourceTree = "<group>"; };
 		1B8A00180000000000000001 /* AppearanceSettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppearanceSettingsView.swift; sourceTree = "<group>"; };
 		1B8A001A0000000000000001 /* UserNameSetupView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UserNameSetupView.swift; sourceTree = "<group>"; };
 		1B8A001C0000000000000001 /* EditDisplayNameView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EditDisplayNameView.swift; sourceTree = "<group>"; };
@@ -131,11 +136,6 @@
 		1B8A00580000000000000001 /* RecurringIncomeDateHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecurringIncomeDateHelper.swift; sourceTree = "<group>"; };
 		1B8A005A0000000000000001 /* RecurringIncomeFormView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecurringIncomeFormView.swift; sourceTree = "<group>"; };
 		1B8A005C0000000000000001 /* RecurringIncomeListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecurringIncomeListView.swift; sourceTree = "<group>"; };
-		1B8A000E0000000000000001 /* ReportsViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReportsViewModel.swift; sourceTree = "<group>"; };
-		1B8A00100000000000000001 /* CategorySpendingSummary.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategorySpendingSummary.swift; sourceTree = "<group>"; };
-		1B8A00120000000000000001 /* CategoryDonutChartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategoryDonutChartView.swift; sourceTree = "<group>"; };
-		1B8A00140000000000000001 /* CategoryBreakdownListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategoryBreakdownListView.swift; sourceTree = "<group>"; };
-		1B8A00160000000000000001 /* GreetingProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GreetingProvider.swift; sourceTree = "<group>"; };
 		3AA905561C6DB98E146EF1D4 /* ConfirmTransactionView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ConfirmTransactionView.swift; sourceTree = "<group>"; };
 		3F788FA5EA88B9A606B5EED9 /* ReportsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReportsView.swift; sourceTree = "<group>"; };
 		420D57B85ECC87443EAD2EBF /* DashboardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
@@ -177,7 +177,6 @@
 			isa = PBXGroup;
 			children = (
 			);
-			name = AppIcon.appiconset;
 			path = AppIcon.appiconset;
 			sourceTree = "<group>";
 		};
@@ -186,7 +185,6 @@
 			children = (
 				3AA905561C6DB98E146EF1D4 /* ConfirmTransactionView.swift */,
 			);
-			name = ConfirmTransaction;
 			path = ConfirmTransaction;
 			sourceTree = "<group>";
 		};
@@ -197,8 +195,16 @@
 				1A73F1E142271D73982A4B00 /* OnboardingView.swift */,
 				1B8A001A0000000000000001 /* UserNameSetupView.swift */,
 			);
-			name = Onboarding;
 			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		1B8A005E0000000000000001 /* Income */ = {
+			isa = PBXGroup;
+			children = (
+				1B8A005A0000000000000001 /* RecurringIncomeFormView.swift */,
+				1B8A005C0000000000000001 /* RecurringIncomeListView.swift */,
+			);
+			path = Income;
 			sourceTree = "<group>";
 		};
 		28DF7F539B1699042E47E5B8 /* Assets.xcassets */ = {
@@ -207,7 +213,6 @@
 				9482FC839F2E4CA30CE60ECD /* AccentColor.colorset */,
 				03F1046F752B9553AD244150 /* AppIcon.appiconset */,
 			);
-			name = Assets.xcassets;
 			path = Assets.xcassets;
 			sourceTree = "<group>";
 		};
@@ -235,7 +240,6 @@
 				E382CC0B39307629A2DB7BBA /* SlipParserSamples.swift */,
 				EE60D0433181FFF3EB09A0A4 /* SlipParserService.swift */,
 			);
-			name = Services;
 			path = Services;
 			sourceTree = "<group>";
 		};
@@ -249,18 +253,7 @@
 				1B8A003E0000000000000001 /* SpendingInsightProvider.swift */,
 				3F788FA5EA88B9A606B5EED9 /* ReportsView.swift */,
 			);
-			name = Reports;
 			path = Reports;
-			sourceTree = "<group>";
-		};
-		1B8A005E0000000000000001 /* Income */ = {
-			isa = PBXGroup;
-			children = (
-				1B8A005A0000000000000001 /* RecurringIncomeFormView.swift */,
-				1B8A005C0000000000000001 /* RecurringIncomeListView.swift */,
-			);
-			name = Income;
-			path = Income;
 			sourceTree = "<group>";
 		};
 		4E1A945801F209FE8ED07DBE /* Settings */ = {
@@ -278,7 +271,6 @@
 				1B8A000C0000000000000001 /* SettingsView.swift */,
 				1B8A00280000000000000001 /* SupportedBanksView.swift */,
 			);
-			name = Settings;
 			path = Settings;
 			sourceTree = "<group>";
 		};
@@ -289,7 +281,6 @@
 				1B8A00240000000000000001 /* PrivacyOverlayView.swift */,
 				1B8A00420000000000000001 /* ShareSheetView.swift */,
 			);
-			name = Components;
 			path = Components;
 			sourceTree = "<group>";
 		};
@@ -298,7 +289,6 @@
 			children = (
 				1B8A001E0000000000000001 /* AppSettingsStore.swift */,
 			);
-			name = Settings;
 			path = Settings;
 			sourceTree = "<group>";
 		};
@@ -307,7 +297,6 @@
 			children = (
 				1B8A004A0000000000000001 /* AppLockView.swift */,
 			);
-			name = Security;
 			path = Security;
 			sourceTree = "<group>";
 		};
@@ -317,7 +306,6 @@
 				420D57B85ECC87443EAD2EBF /* DashboardView.swift */,
 				1B8A004E0000000000000001 /* MonthPickerSheet.swift */,
 			);
-			name = Dashboard;
 			path = Dashboard;
 			sourceTree = "<group>";
 		};
@@ -331,7 +319,6 @@
 				7AAE61ABB1910CA1EBB251CA /* TransactionItem.swift */,
 				49DD4ED0745E08A76AB356F0 /* TransactionType.swift */,
 			);
-			name = Models;
 			path = Models;
 			sourceTree = "<group>";
 		};
@@ -350,7 +337,6 @@
 				D9A0B3CA8D1BEFB9858C8D0E /* MainTabView.swift */,
 				D3DE364BFB7EBFEDBA60CDB1 /* SlipWiseApp.swift */,
 			);
-			name = App;
 			path = App;
 			sourceTree = "<group>";
 		};
@@ -358,7 +344,6 @@
 			isa = PBXGroup;
 			children = (
 			);
-			name = AccentColor.colorset;
 			path = AccentColor.colorset;
 			sourceTree = "<group>";
 		};
@@ -376,7 +361,6 @@
 				1B8A00580000000000000001 /* RecurringIncomeDateHelper.swift */,
 				086254077A0F59B1CEFACE9C /* String+Helpers.swift */,
 			);
-			name = Utilities;
 			path = Utilities;
 			sourceTree = "<group>";
 		};
@@ -386,7 +370,6 @@
 				28DF7F539B1699042E47E5B8 /* Assets.xcassets */,
 				8FE2D63902213778D0686E76 /* Assets.xcassets */,
 			);
-			name = Resources;
 			path = Resources;
 			sourceTree = "<group>";
 		};
@@ -399,7 +382,6 @@
 				430273E2AD2C524965B6D517 /* Services */,
 				995775FEC8442F2D04F50F0A /* Utilities */,
 			);
-			name = Core;
 			path = Core;
 			sourceTree = "<group>";
 		};
@@ -416,7 +398,6 @@
 				4E1A945801F209FE8ED07DBE /* Settings */,
 				DF7C352E68ADE3C84061B13D /* Transactions */,
 			);
-			name = Features;
 			path = Features;
 			sourceTree = "<group>";
 		};
@@ -430,7 +411,6 @@
 				1B8A003C0000000000000001 /* SlipScanReviewView.swift */,
 				BE0F87B0B8BE0DA0A32A1208 /* ScanSlipViewModel.swift */,
 			);
-			name = ScanSlip;
 			path = ScanSlip;
 			sourceTree = "<group>";
 		};
@@ -444,7 +424,6 @@
 				642D60E27B6370D23962895A /* TransactionListView.swift */,
 				F39B1B31E9B71150E4B8D300 /* TransactionViewModel.swift */,
 			);
-			name = Transactions;
 			path = Transactions;
 			sourceTree = "<group>";
 		};
@@ -472,7 +451,6 @@
 				C363671711CF9D68CECF6549 /* Features */,
 				99CD9ACE2164C9A728E611F0 /* Resources */,
 			);
-			name = SlipWise;
 			path = SlipWise;
 			sourceTree = "<group>";
 		};
@@ -504,6 +482,12 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1700;
 				LastUpgradeCheck = 1700;
+				TargetAttributes = {
+					414415F245541194DAE1643B = {
+						DevelopmentTeam = XZ4TFKM3RW;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 25C1A7B4734C60C47CB72B74 /* Build configuration list for PBXProject "SlipWise" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -514,8 +498,6 @@
 				Base,
 			);
 			mainGroup = 2B78BE1E05219C18D4406117;
-			minimizedProjectReferenceProxies = 0;
-			preferredProjectObjectVersion = 77;
 			productRefGroup = 7A5FF57AA7ECDA92DEC8471A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -667,8 +649,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -679,10 +660,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
-				INFOPLIST_KEY_CFBundleDisplayName = SlipDee;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XZ4TFKM3RW;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = SlipDee;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "SlipDee uses Face ID to quickly unlock the app and protect editing or deleting your saved transactions.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "SlipDee lets you choose bank slip screenshots so it can read and organize transaction details.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -691,7 +676,9 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.SlipWise;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chalermchon.SlipDee;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
@@ -766,10 +753,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
-				INFOPLIST_KEY_CFBundleDisplayName = SlipDee;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XZ4TFKM3RW;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = SlipDee;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "SlipDee uses Face ID to quickly unlock the app and protect editing or deleting your saved transactions.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "SlipDee lets you choose bank slip screenshots so it can read and organize transaction details.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -778,7 +769,9 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.SlipWise;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chalermchon.SlipDee;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;

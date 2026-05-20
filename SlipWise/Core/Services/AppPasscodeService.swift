@@ -43,6 +43,6 @@ final class AppPasscodeService {
     }
 
     func isValidPasscode(_ passcode: String) -> Bool {
-        passcode.count >= 4 && passcode.allSatisfy(\.isNumber)
+        Self.isValidFourDigitPasscode(passcode)
     }
 }

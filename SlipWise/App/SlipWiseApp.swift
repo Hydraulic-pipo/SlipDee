@@ -3,6 +3,11 @@ import SwiftUI
 
 @main
 struct SlipWiseApp: App {
+    private enum LaunchState {
+        case ready(ModelContainer)
+        case databaseUnavailable
+    }
+
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage(AppSettingsKey.hasSeenOnboarding) private var hasSeenOnboarding = false
     @AppStorage(AppSettingsKey.appearanceMode) private var appearanceModeRawValue = AppAppearanceMode.system.rawValue
@@ -13,7 +18,7 @@ struct SlipWiseApp: App {
 
     @StateObject private var appLockManager = AppLockManager()
 
-    private let sharedModelContainer: ModelContainer = {
+    private let launchState: LaunchState = {
         let schema = Schema([
             TransactionItem.self,
             TransactionCategory.self,
@@ -28,61 +33,62 @@ struct SlipWiseApp: App {
         let storeURL = Self.defaultStoreURL()
 
         do {
-            return try Self.makeContainer(schema: schema, storeURL: storeURL)
+            return .ready(try Self.makeContainer(schema: schema, storeURL: storeURL))
         } catch {
-            // The baseline app used a different TransactionItem schema, so older local stores
-            // can fail to migrate during early development. Resetting the local store lets the
-            // app recover cleanly while the new data layer settles.
-            Self.removeStoreFiles(at: storeURL)
-
-            do {
-                return try Self.makeContainer(schema: schema, storeURL: storeURL)
-            } catch {
-                fatalError("Failed to create model container: \(error)")
-            }
+            #if DEBUG
+            print("Failed to create model container at \(storeURL.path): \(error.localizedDescription)")
+            #endif
+            // TODO: Add an explicit SwiftData migration plan before shipping schema changes.
+            // Never delete the existing store automatically on launch failure.
+            return .databaseUnavailable
         }
     }()
 
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                Group {
-                    if shouldShowNameSetup {
-                        UserNameSetupView()
-                    } else if shouldShowSecuritySetup {
-                        FirstLaunchSecuritySetupView()
-                    } else if appLockManager.isLocked {
-                        AppLockView(lockManager: appLockManager)
-                    } else if hasSeenOnboarding {
-                        MainTabView()
-                    } else {
-                        OnboardingView {
-                            hasSeenOnboarding = true
+            switch launchState {
+            case let .ready(modelContainer):
+                ZStack {
+                    Group {
+                        if shouldShowNameSetup {
+                            UserNameSetupView()
+                        } else if shouldShowSecuritySetup {
+                            FirstLaunchSecuritySetupView()
+                        } else if appLockManager.isLocked {
+                            AppLockView(lockManager: appLockManager)
+                        } else if hasSeenOnboarding {
+                            MainTabView()
+                        } else {
+                            OnboardingView {
+                                hasSeenOnboarding = true
+                            }
                         }
                     }
-                }
 
-                if isScreenshotProtectionEnabled, scenePhase != .active {
-                    PrivacyOverlayView(
-                        title: "SlipDee",
-                        message: "Your financial data is protected."
-                    )
+                    if isScreenshotProtectionEnabled, scenePhase != .active {
+                        PrivacyOverlayView(
+                            title: "SlipDee",
+                            message: "Your financial data is protected."
+                        )
+                    }
                 }
-            }
-            .preferredColorScheme(selectedAppearanceMode.colorScheme)
-            .task {
-                appLockManager.prepareForLaunch()
-                // Seed small fictional samples so the charts and dashboard are useful on first launch.
-                await DemoDataSeeder.seedIfNeeded(container: sharedModelContainer)
-                await appLockManager.handleScenePhaseChanged(.active)
-            }
-            .onChange(of: scenePhase) { _, newPhase in
-                Task {
-                    await appLockManager.handleScenePhaseChanged(newPhase)
+                .preferredColorScheme(selectedAppearanceMode.colorScheme)
+                .task {
+                    appLockManager.prepareForLaunch()
+                    // Seed small fictional samples so the charts and dashboard are useful on first launch.
+                    await DemoDataSeeder.seedIfNeeded(container: modelContainer)
+                    await appLockManager.handleScenePhaseChanged(.active)
                 }
+                .onChange(of: scenePhase) { _, newPhase in
+                    Task {
+                        await appLockManager.handleScenePhaseChanged(newPhase)
+                    }
+                }
+                .modelContainer(modelContainer)
+            case .databaseUnavailable:
+                DatabaseErrorView()
             }
         }
-        .modelContainer(sharedModelContainer)
     }
 
     private var selectedAppearanceMode: AppAppearanceMode {
@@ -114,17 +120,60 @@ private extension SlipWiseApp {
 
         return directoryURL.appendingPathComponent("SlipWise.store")
     }
+}
 
-    static func removeStoreFiles(at storeURL: URL) {
-        let fileManager = FileManager.default
-        let urlsToRemove = [
-            storeURL,
-            storeURL.appendingPathExtension("shm"),
-            storeURL.appendingPathExtension("wal")
-        ]
+private struct DatabaseErrorView: View {
+    var body: some View {
+        AppScreen {
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: AppSpacing.section) {
+                    Spacer(minLength: 40)
 
-        for url in urlsToRemove where fileManager.fileExists(atPath: url.path) {
-            try? fileManager.removeItem(at: url)
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("SlipDee")
+                            .font(.system(size: 18, weight: .semibold, design: .rounded))
+                            .foregroundStyle(AppColors.secondaryText)
+
+                        Text("Unable to open local data")
+                            .font(.system(size: 30, weight: .bold, design: .rounded))
+                            .foregroundStyle(AppColors.primaryText)
+
+                        Text("Your existing data was preserved. SlipDee did not reset or replace your local database automatically.")
+                            .font(.subheadline)
+                            .foregroundStyle(AppColors.secondaryText)
+                    }
+
+                    AppCard {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("What you can try")
+                                .font(.headline)
+                                .foregroundStyle(AppColors.primaryText)
+
+                            Text("1. Close and reopen the app.")
+                                .font(.subheadline)
+                                .foregroundStyle(AppColors.secondaryText)
+
+                            Text("2. Make sure your device has available storage and try again.")
+                                .font(.subheadline)
+                                .foregroundStyle(AppColors.secondaryText)
+
+                            Text("3. If the problem continues, contact support and mention that SlipDee could not open local data.")
+                                .font(.subheadline)
+                                .foregroundStyle(AppColors.secondaryText)
+                        }
+                    }
+
+                    AppCard {
+                        Text("SlipDee will not create a new empty database over your existing records without an explicit reset action.")
+                            .font(.subheadline)
+                            .foregroundStyle(AppColors.secondaryText)
+                    }
+
+                    Spacer(minLength: 20)
+                }
+                .padding(.horizontal, AppSpacing.page)
+                .padding(.bottom, 32)
+            }
         }
     }
 }

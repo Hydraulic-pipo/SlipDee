@@ -250,6 +250,12 @@ struct TransactionDetailView: View {
                 continueAuthenticatedAction()
             case .requiresPasscode:
                 showingPasscodePrompt = true
+            case .cancelled:
+                pendingAction = nil
+            case .unavailable:
+                authenticationErrorMessage = passcodeAvailable
+                    ? "Face ID or Touch ID isn't available right now. Enter your passcode to continue."
+                    : "Face ID or Touch ID isn't available on this device right now."
             case .failure:
                 authenticationErrorMessage = "Authentication failed. Please try again."
             }

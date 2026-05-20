@@ -57,8 +57,8 @@ struct PasscodePromptView: View {
                                     }
                                 }
                                 .buttonStyle(PrimaryFintechButtonStyle())
-                                .disabled(passcode.isEmpty)
-                                .opacity(passcode.isEmpty ? 0.55 : 1)
+                                .disabled(!AppPasscodeService.isValidFourDigitPasscode(passcode))
+                                .opacity(AppPasscodeService.isValidFourDigitPasscode(passcode) ? 1 : 0.55)
                             }
                         }
                     }
@@ -68,6 +68,10 @@ struct PasscodePromptView: View {
                 }
             }
             .navigationBarHidden(true)
+        }
+        .onChange(of: passcode) { _, newValue in
+            passcode = String(newValue.filter(\.isNumber).prefix(4))
+            errorMessage = nil
         }
     }
 }
